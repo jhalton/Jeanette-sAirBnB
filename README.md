@@ -1,9 +1,9 @@
 # Jeanette-sAirBnB
 
-
 ## Database Schema Design
 
 `<insert database schema design here>`
+![schema](./Screenshot_2023-05-04_schema.png)
 
 ## API Documentation
 
@@ -54,7 +54,7 @@ Returns the information about the current user that is logged in.
 - Request
 
   - Method: GET
-  - URL: '/users/:id
+  - URL: /users/:id
   - Body: none
 
 - Successful Response when there is a logged in user
@@ -168,7 +168,7 @@ user's information.
 - Request
 
   - Method: POST
-  - URL: /users/newUser
+  - URL: /users
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -263,7 +263,7 @@ Returns all the spots.
 - Request
 
   - Method: GET
-  - URL: '/spots'
+  - URL: /spots
   - Body: none
 
 - Successful Response
@@ -305,7 +305,7 @@ Returns all the spots owned (created) by the current user.
 - Request
 
   - Method: GET
-  - URL: '/spots/users/:userId'
+  - URL: /users/:userId/spots
   - Body: none
 
 - Successful Response
@@ -347,7 +347,7 @@ Returns the details of a spot specified by its id.
 - Request
 
   - Method: GET
-  - URL: '/spots/:spotId'
+  - URL: /spots/:spotId
   - Body: none
 
 - Successful Response
@@ -415,7 +415,7 @@ Creates and returns a new spot.
 - Request
 
   - Method: POST
-  - URL: '/spots/create'
+  - URL: /spots
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -492,7 +492,7 @@ Create and return a new image for a spot specified by id.
 - Request
 
   - Method: POST
-  - URL: '/spots/:spotId/images'
+  - URL: /spots/:spotId/images
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -541,7 +541,7 @@ Updates and returns an existing spot.
 - Request
 
   - Method: PUT
-  - URL: '/spots/:spotId'
+  - URL: /spots/:spotId
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -631,7 +631,7 @@ Deletes an existing spot.
 - Request
 
   - Method: DELETE
-  - URL: '/spots/:spotId
+  - URL: /spots/:spotId
   - Body: none
 
 - Successful Response
@@ -670,7 +670,7 @@ Returns all the reviews written by the current user.
 - Request
 
   - Method: GET
-  - URL: 'reviews/users/:userId
+  - URL:/users/:userId/reviews
   - Body: none
 
 - Successful Response
@@ -728,7 +728,7 @@ Returns all the reviews that belong to a spot specified by id.
 - Request
 
   - Method: GET
-  - URL: '/reviews/spots/:spotId'
+  - URL: /spots/:spotId/reviews
   - Body: none
 
 - Successful Response
@@ -786,7 +786,7 @@ Create and return a new review for a spot specified by id.
 - Request
 
   - Method: POST
-  - URL: '/reviews/spots/:spotId'
+  - URL: /spots/:spotId/reviews
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -869,7 +869,7 @@ Create and return a new image for a review specified by id.
 - Request
 
   - Method: POST
-  - URL: '/reviews/:reviewId/images'
+  - URL: /reviews/:reviewId/images
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -930,7 +930,7 @@ Update and return an existing review.
 - Request
 
   - Method: PUT
-  - URL: '/reviews/:reviewId'
+  - URL: /reviews/:reviewId
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -1000,7 +1000,7 @@ Delete an existing review.
 - Request
 
   - Method: DELETE
-  - URL: '/reviews/:reviewId
+  - URL: /reviews/:reviewId
   - Body: none
 
 - Successful Response
@@ -1039,7 +1039,7 @@ Return all the bookings that the current user has made.
 - Request
 
   - Method: GET
-  - URL: '/bookings/users/:userId'
+  - URL: /users/:userId/bookings
   - Body: none
 
 - Successful Response
@@ -1086,7 +1086,7 @@ Return all the bookings for a spot specified by id.
 - Request
 
   - Method: GET
-  - URL: '/bookings/spots/:spotId
+  - URL: /spots/:spotId/bookings
   - Body: none
 
 - Successful Response: If you ARE NOT the owner of the spot.
@@ -1158,7 +1158,7 @@ Create and return a new booking from a spot specified by id.
 - Request
 
   - Method: POST
-  - URL: '/bookings/spots/:spotId'
+  - URL: /spots/:spotId/bookings
   - Body:
 
     ```json
@@ -1242,7 +1242,7 @@ Update and return an existing booking.
 - Request
 
   - Method: PUT
-  - URL: '/booking/:bookingId'
+  - URL: /booking/:bookingId
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -1342,7 +1342,7 @@ Delete an existing booking.
 - Request
 
   - Method: DELETE
-  - URL: '/bookings/:bookingId'
+  - URL: /bookings/:bookingId
   - Body: none
 
 - Successful Response
@@ -1395,7 +1395,7 @@ Delete an existing image for a Spot.
 - Request
 
   - Method: DELETE
-  - URL: '/spots/images/:imageId'
+  - URL: /images/:imageId //this is dealt with through the images table
   - Body: none
 
 - Successful Response
@@ -1433,7 +1433,7 @@ Delete an existing image for a Review.
 - Request
 
   - Method: DELETE
-  - URL: '/reviews/images/:imageId'
+  - URL: /images/:imageId //this is dealt with through the images table
   - Body: none
 
 - Successful Response
@@ -1470,7 +1470,7 @@ Return spots filtered by query parameters.
 - Request
 
   - Method: GET
-  - URL: '/spots?:query'
+  - URL: /spots?:query
   - Query Parameters
     - page: integer, minimum: 1, maximum: 10, default: 1
     - size: integer, minimum: 1, maximum: 20, default: 20
