@@ -1,5 +1,5 @@
 # Jeanette-sAirBnB
-# Jeanette-sAirBnB
+
 
 ## Database Schema Design
 
