@@ -65,7 +65,6 @@ router.delete("/", (_req, res) => {
 router.get("/", (req, res) => {
   const { user } = req;
   if (user) {
-    console.log(user);
     const safeUser = {
       id: user.id,
       email: user.email,
