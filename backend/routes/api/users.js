@@ -51,4 +51,16 @@ router.post("", validateSignup, async (req, res) => {
     user: safeUser,
   });
 });
+
+//Get the Current User
+//-->
+router.get("/:userId", async (req, res) => {
+  const user = await User.findByPk(req.params.userId);
+
+  res.status(200);
+  res.json(user);
+});
+
+//Get all Spots owned by the Current user
+router.get("/:userId/spots", async (req, res) => {});
 module.exports = router;

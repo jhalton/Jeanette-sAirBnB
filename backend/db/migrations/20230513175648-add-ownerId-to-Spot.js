@@ -21,6 +21,7 @@ module.exports = {
         model: "Users",
         key: "id",
       },
+      onDelete: "CASCADE",
     });
 
     await queryInterface.addIndex(options, ["address", "city", "state"], {
