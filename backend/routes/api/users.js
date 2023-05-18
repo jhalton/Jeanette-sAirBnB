@@ -3,8 +3,12 @@ const bcrypt = require("bcryptjs");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
-const { setTokenCookie, requireAuth } = require("../../utils/auth");
-const { User } = require("../../db/models");
+const {
+  setTokenCookie,
+  requireAuth,
+  restoreUser,
+} = require("../../utils/auth");
+const { User, Spot, Review } = require("../../db/models");
 
 const router = express.Router();
 
@@ -53,14 +57,45 @@ router.post("", validateSignup, async (req, res) => {
 });
 
 //Get the Current User
-//-->
-router.get("/:userId", async (req, res) => {
-  const user = await User.findByPk(req.params.userId);
-
-  res.status(200);
-  res.json(user);
+//--> YASSS. She's working. Do I need to set another scope for this to allow email?
+router.get("/:userId", restoreUser, requireAuth, async (req, res) => {
+  if (parseInt(req.params.userId) === parseInt(req.user.id)) {
+    const user = await User.findByPk(req.params.userId);
+    res.status(200);
+    res.json({ user: user });
+  } else {
+    res.status(200);
+    return res.json({ user: null });
+  }
 });
 
-//Get all Spots owned by the Current user
-router.get("/:userId/spots", async (req, res) => {});
+//Get all Spots owned by the Current User
+//--> It hangs if the user doesn't match current. Also, need ratings.
+router.get("/:userId/spots", restoreUser, requireAuth, async (req, res) => {
+  if (parseInt(req.params.userId) === parseInt(req.user.id)) {
+    const spots = await Spot.findAll({
+      where: {
+        ownerId: parseInt(req.params.userId),
+      },
+    });
+    res.status(200);
+    res.json({ Spots: spots });
+  } else {
+    res.status(404);
+    res.json({ message: "Authorization required." });
+  }
+});
+
+//Get all Reviews of the Current User
+// --> need to auth current user
+router.get("/:userId/reviews", async (req, res) => {
+  const reviews = await Review.findAll({
+    where: {
+      userId: req.params.userId,
+    },
+  });
+
+  res.status(200);
+  res.json({ Reviews: reviews });
+});
 module.exports = router;

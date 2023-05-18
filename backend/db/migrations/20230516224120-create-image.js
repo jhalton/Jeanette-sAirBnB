@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       imageableType: {
-        type: Sequelize.ENUM("spot", "review"),
+        type: Sequelize.ENUM("Review", "Spot"),
       },
       url: {
         type: Sequelize.STRING,
@@ -21,10 +21,12 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
     });
   },

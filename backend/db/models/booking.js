@@ -38,10 +38,18 @@ module.exports = (sequelize, DataTypes) => {
         hooks: true,
       },
       startDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          isDate: true,
+        },
       },
       endDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          isDate: true,
+        },
       },
     },
     {
