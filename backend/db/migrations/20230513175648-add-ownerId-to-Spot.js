@@ -15,14 +15,19 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.addColumn(options, "ownerId", {
-      type: Sequelize.INTEGER,
-      references: {
-        model: "Users",
-        key: "id",
+    await queryInterface.addColumn(
+      options,
+      "ownerId",
+      {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Users",
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
-      onDelete: "CASCADE",
-    });
+      {}
+    );
 
     await queryInterface.addIndex(options, ["address", "city", "state"], {
       unique: true,

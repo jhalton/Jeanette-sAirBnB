@@ -1,6 +1,6 @@
 "use strict";
 
-const { query } = require("express");
+// const { query } = require("express");
 
 let options = {};
 options.tableName = "Images";
