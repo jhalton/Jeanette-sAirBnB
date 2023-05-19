@@ -9,6 +9,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.hasMany(models.Spot, {
+        foreignKey: "ownerId",
+        as: "Owner",
+      });
+      User.hasMany(models.Review, {
+        foreignKey: "userId",
+      });
+      User.hasMany(models.Booking, {
+        foreignKey: "userId",
+      });
     }
   }
   User.init(
@@ -54,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "User",
       defaultScope: {
         attributes: {
-          exclude: ["hashedPassword", "email", "createdAt", "updatedAt"],
+          exclude: ["hashedPassword", /*"email",*/ "createdAt", "updatedAt"],
         },
       },
     }
