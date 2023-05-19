@@ -78,7 +78,7 @@ router.get("/", async (req, res) => {
 //Get details of a Spot from an id
 //-->Could maybe use middleware so previewImage shows up if null
 //DONE. Except for the above thought ^
-router.get("/:spotId", async (req, res) => {
+router.get("/:spotId", async (req, res, next) => {
   const spot = await Spot.findByPk(req.params.spotId, {
     attributes: {
       include: [
@@ -90,9 +90,6 @@ router.get("/:spotId", async (req, res) => {
       {
         model: Review,
         attributes: [],
-        where: {
-          spotId: req.params.spotId,
-        },
       },
       {
         model: Image,
@@ -105,13 +102,13 @@ router.get("/:spotId", async (req, res) => {
         attributes: ["id", "firstName", "lastName"],
       },
     ],
-    group: ["SpotImages.id"],
+    group: ["SpotImages.id", "Owner.id", "Spot.id"],
   });
 
   if (!spot) {
-    res.status(404);
-    res.json({ message: "Spot couldn't be found" });
-    return;
+    const err = new Error(`Spot couldn't be found`);
+    res.json({ message: err.message });
+    return next(err);
   }
 
   res.status(200);
@@ -137,8 +134,6 @@ router.post("/", restoreUser, requireAuth, validateSpot, async (req, res) => {
     price,
   });
 
-  console.log(newSpot);
-
   const safeSpot = {
     id: newSpot.id,
     ownerId: newSpot.ownerId,
@@ -162,19 +157,49 @@ router.post("/", restoreUser, requireAuth, validateSpot, async (req, res) => {
 });
 
 //Add an Image to a Spot based on the Spot's id
-// --> Need authorization, authentication,
-router.post("/:spotId/images", async (req, res) => {
-  const spot = await Spot.findByPk(req.params.spotId);
-  //Do the things
+// --> Need to return the correct response body without createdAt and updatedAt
+// It also isn't returning the id
+router.post(
+  "/:spotId/images",
+  restoreUser,
+  requireAuth,
+  async (req, res, next) => {
+    const spot = await Spot.findByPk(req.params.spotId);
+    if (!spot) {
+      const err = new Error(`Spot couldn't be found`);
+      res.json({ message: err.message });
+      return next(err);
+    }
 
-  if (!spot) {
-    res.status(404);
-    return res.json({ message: `Spot couldn't be found` });
+    if (parseInt(spot.ownerId) === parseInt(req.user.id)) {
+      const { url, preview } = req.body;
+
+      const newImage = await Image.create({
+        url,
+        preview,
+      });
+
+      const safeImage = {
+        id: newImage.id,
+        url: newImage.url,
+        preview: newImage.preview,
+      };
+
+      console.log(newImage);
+
+      await spot.addSpotImages(newImage);
+      res.status(200);
+      res.json(safeImage);
+    } else {
+      const err = new Error(`Authorization`);
+      res.json({ message: err.message });
+      return next(err);
+    }
   }
-});
+);
 
 //Edit a Spot
-// Needs authentication, proper authorization
+//--> Needs authentication, proper authorization
 router.put(
   "/:spotId",
   restoreUser,
@@ -183,8 +208,10 @@ router.put(
   async (req, res) => {
     const spot = await Spot.findByPk(req.params.spotId);
     if (!spot) {
+      const err = new Error(`Spot couldn't be found`);
+      res.json({ message: err.message });
       res.status(404);
-      return res.json({ message: `Spot couldn't be found` });
+      return next(err);
     }
     const {
       address,
