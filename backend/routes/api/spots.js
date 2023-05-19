@@ -158,9 +158,9 @@ router.post("/", restoreUser, requireAuth, validateSpot, async (req, res) => {
 });
 
 //Add an Image to a Spot based on the Spot's id
-// --> Need to return the correct response body without createdAt and updatedAt
-// --> It also isn't returning the id
+//This isn't returning the preview... regardless of whether it's true or false
 // --> When I try to deploy this endpoint, I get an error saying "column \"commentableId\" does not exist"
+//--> Authentication and authorization required
 router.post(
   "/:spotId/images",
   restoreUser,
@@ -169,12 +169,13 @@ router.post(
     const spot = await Spot.findByPk(req.params.spotId);
     if (!spot) {
       const err = new Error(`Spot couldn't be found`);
+      err.statusCode = 404;
       res.json({ message: err.message });
       return next(err);
     }
 
     if (parseInt(spot.ownerId) === parseInt(req.user.id)) {
-      const { url, preview } = req.body;
+      const { id, url, preview } = req.body;
 
       const newImage = await Image.create({
         url,
