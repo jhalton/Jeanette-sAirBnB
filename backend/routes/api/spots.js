@@ -3,7 +3,11 @@ const bcrypt = require("bcryptjs");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
-const { setTokenCookie, requireAuth } = require("../../utils/auth");
+const {
+  setTokenCookie,
+  requireAuth,
+  restoreUser,
+} = require("../../utils/auth");
 const { Spot, Review, User, Image, sequelize } = require("../../db/models");
 const spot = require("../../db/models/spot");
 
@@ -116,11 +120,12 @@ router.get("/:spotId", async (req, res) => {
 
 //Create a Spot
 //-->Need to authenticate
-router.post("/", requireAuth, validateSpot, async (req, res) => {
+router.post("/", restoreUser, requireAuth, validateSpot, async (req, res) => {
   const { address, city, state, country, lat, lng, name, description, price } =
     req.body;
 
   const newSpot = await Spot.create({
+    ownerId: req.user.id,
     address,
     city,
     state,
@@ -132,7 +137,11 @@ router.post("/", requireAuth, validateSpot, async (req, res) => {
     price,
   });
 
+  console.log(newSpot);
+
   const safeSpot = {
+    id: newSpot.id,
+    ownerId: newSpot.ownerId,
     address: newSpot.address,
     city: newSpot.city,
     state: newSpot.state,
@@ -142,12 +151,14 @@ router.post("/", requireAuth, validateSpot, async (req, res) => {
     name: newSpot.name,
     description: newSpot.description,
     price: newSpot.price,
+    createdAt: newSpot.createdAt,
+    updatedAt: newSpot.updatedAt,
   };
 
-  await setTokenCookie(res, safeSpot);
+  setTokenCookie(res, safeSpot);
 
   res.status(201);
-  res.json(safeSpot);
+  return res.json(safeSpot);
 });
 
 //Add an Image to a Spot based on the Spot's id
@@ -164,34 +175,49 @@ router.post("/:spotId/images", async (req, res) => {
 
 //Edit a Spot
 // Needs authentication, proper authorization
-router.put("/:spotId", validateSpot, async (req, res) => {
-  const spot = await Spot.findByPk(req.params.spotId);
-  if (!spot) {
-    res.status(404);
-    return res.json({ message: `Spot couldn't be found` });
+router.put(
+  "/:spotId",
+  restoreUser,
+  requireAuth,
+  validateSpot,
+  async (req, res) => {
+    const spot = await Spot.findByPk(req.params.spotId);
+    if (!spot) {
+      res.status(404);
+      return res.json({ message: `Spot couldn't be found` });
+    }
+    const {
+      address,
+      city,
+      state,
+      country,
+      lat,
+      lng,
+      name,
+      description,
+      price,
+    } = req.body;
+
+    const updatedSpot = await spot.update({
+      address,
+      city,
+      state,
+      country,
+      lat,
+      lng,
+      name,
+      description,
+      price,
+    });
+
+    res.status(200);
+    res.json(updatedSpot);
   }
-  const { address, city, state, country, lat, lng, name, description, price } =
-    req.body;
-
-  const updatedSpot = await spot.update({
-    address,
-    city,
-    state,
-    country,
-    lat,
-    lng,
-    name,
-    description,
-    price,
-  });
-
-  res.status(200);
-  res.json(updatedSpot);
-});
+);
 
 //Delete a Spot
-//Needs authorization(spot must belong to current user), authentication
-router.delete("/:spotId", validateSpot, async (req, res) => {
+//DONE.
+router.delete("/:spotId", restoreUser, requireAuth, async (req, res) => {
   const spot = await Spot.findByPk(req.params.spotId);
   if (!spot) {
     res.status(404);
