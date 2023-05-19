@@ -71,7 +71,7 @@ router.post("/", validateSignup, async (req, res, next) => {
 });
 
 //Get the Current User
-//--> This is workin. Do I need to set another scope for this to allow email?
+//--> This is working. Do I need to set another scope for this to allow email?
 router.get("/:userId", restoreUser, requireAuth, async (req, res) => {
   if (parseInt(req.params.userId) === parseInt(req.user.id)) {
     const user = await User.findByPk(req.params.userId);
@@ -128,16 +128,46 @@ router.get("/:userId/spots", restoreUser, requireAuth, async (req, res) => {
 
 //Get all Reviews of the Current User
 // --> need to auth current user
-router.get("/:userId/reviews", restoreUser, requireAuth, async (req, res) => {
-  if (parseInt(req.params.userId) === parseInt(req.user.id)) {
+
+router.get(
+  "/:userId/reviews",
+  restoreUser,
+  requireAuth,
+  async (req, res, next) => {
+    // if (parseInt(req.params.userId) === parseInt(req.user.id)) {
     const reviews = await Review.findAll({
       where: {
         userId: req.params.userId,
       },
+      include: [
+        { model: User, attributes: ["id", "firstName", "lastName"] },
+        {
+          model: Spot,
+          include: [
+            {
+              model: Image,
+              as: "SpotImages",
+              attributes: [["url", "previewImage"]],
+            },
+          ],
+        },
+        { model: Image, as: "ReviewImages", attributes: ["id", "url"] },
+      ],
+    });
+
+    const betterReviews = reviews.map((review) => {
+      const betterReview = review.toJSON();
+      betterReview.Spot.SpotImages.forEach((image) => {
+        betterReview.Spot.previewImage =
+          betterReview.Spot.SpotImages[0]?.previewImage;
+      });
+      delete betterReview.Spot.SpotImages;
+      return betterReview;
     });
 
     res.status(200);
-    res.json({ Reviews: reviews });
+    res.json({ Reviews: betterReviews });
   }
-});
+  // }
+);
 module.exports = router;

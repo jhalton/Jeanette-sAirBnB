@@ -159,7 +159,8 @@ router.post("/", restoreUser, requireAuth, validateSpot, async (req, res) => {
 
 //Add an Image to a Spot based on the Spot's id
 // --> Need to return the correct response body without createdAt and updatedAt
-// It also isn't returning the id
+// --> It also isn't returning the id
+// --> When I try to deploy this endpoint, I get an error saying "column \"commentableId\" does not exist"
 router.post(
   "/:spotId/images",
   restoreUser,
@@ -200,7 +201,7 @@ router.post(
 );
 
 //Edit a Spot
-//--> Needs authentication, proper authorization
+//--> DONE.
 router.put(
   "/:spotId",
   restoreUser,

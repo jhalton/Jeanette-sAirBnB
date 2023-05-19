@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       Image.belongsTo(models.Review, {
         foreignKey: "commentableId",
         constraints: false,
+        as: "ReviewImages",
       });
       Image.belongsTo(models.Spot, {
         foreignKey: "commentableId",
