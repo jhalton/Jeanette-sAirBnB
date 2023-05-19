@@ -8,6 +8,7 @@ options.tableName = "Images";
 if (process.env.NODE_ENV === "production") {
   options.schema = process.env.SCHEMA;
 }
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -17,14 +18,9 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.addColumn(
-      options,
-      "preview",
-      {
-        type: Sequelize.BOOLEAN,
-      },
-      {}
-    );
+    await queryInterface.addColumn(options, "preview", {
+      type: Sequelize.BOOLEAN,
+    });
   },
 
   async down(queryInterface, Sequelize) {
@@ -34,6 +30,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.removeColumn(options, "preview"), {};
+    await queryInterface.removeColumn(options, "preview");
   },
 };
