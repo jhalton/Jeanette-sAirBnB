@@ -107,7 +107,7 @@ router.get("/:userId/spots", restoreUser, requireAuth, async (req, res) => {
           attributes: [["url", "previewImage"]],
         },
       ],
-      group: ["Spot.id"],
+      group: ["Spot.id", "SpotImages.id"],
     });
 
     //To return the previewImage without the Images array
