@@ -30,9 +30,23 @@ const validateSignup = [
 ];
 
 // Sign up
-router.post("", validateSignup, async (req, res) => {
+router.post("/", validateSignup, async (req, res, next) => {
   const { email, password, username, firstName, lastName } = req.body;
   const hashedPassword = bcrypt.hashSync(password);
+  //if username or password already exists, throw error
+  const existingUser = await User.findAll({
+    where: {
+      username,
+      email,
+    },
+  });
+  console.log(existingUser.length);
+  if (existingUser.length) {
+    const err = new Error(`Username or email already exists.`);
+    err.statusCode = 500;
+    next(err);
+  }
+
   const user = await User.create({
     email,
     username,
@@ -57,7 +71,7 @@ router.post("", validateSignup, async (req, res) => {
 });
 
 //Get the Current User
-//--> YASSS. She's working. Do I need to set another scope for this to allow email?
+//--> This is workin. Do I need to set another scope for this to allow email?
 router.get("/:userId", restoreUser, requireAuth, async (req, res) => {
   if (parseInt(req.params.userId) === parseInt(req.user.id)) {
     const user = await User.findByPk(req.params.userId);
