@@ -41,7 +41,8 @@ const validateSpot = [
 ];
 
 //Get all spots
-// --> DONE. Could use some error middleware to handle null previewImage
+// --> Works locally. Could use some error middleware to handle null previewImage
+// --> Render hates my grouping.
 router.get("/", async (req, res) => {
   const spots = await Spot.findAll({
     attributes: {
@@ -60,7 +61,7 @@ router.get("/", async (req, res) => {
         attributes: [["url", "previewImage"]],
       },
     ],
-    group: ["Spot.id"],
+    group: ["Spot.id", "SpotImages.id"],
   });
 
   //To return the previewImage without the Images array
