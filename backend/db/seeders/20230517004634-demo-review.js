@@ -35,6 +35,30 @@ module.exports = {
           review: `It's very small, but that's ok. It's cozy like a coffin.`,
           stars: 3,
         },
+        {
+          userId: 3,
+          spotId: 1,
+          review: `This is literally a bread factory. Why hasn't anyone noticed?`,
+          stars: 5,
+        },
+        {
+          userId: 1,
+          spotId: 3,
+          review: `I'm not sure where I'm supposed to sleep and the octopus is unnerving. Cool jellyfish!`,
+          stars: 5,
+        },
+        {
+          userId: 2,
+          spotId: 3,
+          review: `I was lulled to sleep by the swaying kelp forest, and abruptly woken up by screaming seagulls.`,
+          stars: 3,
+        },
+        {
+          userId: 4,
+          spotId: 1,
+          review: `I concur, this is definitely a bread factory.`,
+          stars: 5,
+        },
       ],
       {}
     );

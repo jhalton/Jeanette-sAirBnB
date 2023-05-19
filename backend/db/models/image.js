@@ -1,5 +1,5 @@
 "use strict";
-const { Model } = require("sequelize");
+const { Model, Validator } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Image extends Model {
     /**
@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       Image.belongsTo(models.Spot, {
         foreignKey: "commentableId",
         constraints: false,
+        as: "imageable",
       });
     }
   }

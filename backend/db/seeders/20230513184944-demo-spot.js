@@ -31,7 +31,6 @@ module.exports = {
         description:
           "A cute little make-believe place with plenty of natural light and high ceilings!",
         price: 99,
-        preview_img: null,
         ownerId: 1,
       },
       {
@@ -44,8 +43,19 @@ module.exports = {
         lng: -122.064374,
         description: `Call it cozy or quaint, but we all know that means it's 200 sq ft.`,
         price: 400,
-        preview_img: null,
         ownerId: 2,
+      },
+      {
+        name: "Test3",
+        address: "789 Test Blvd",
+        city: "Monterey",
+        state: "CA",
+        country: "USA",
+        lat: 36.6182,
+        lng: 121.9019,
+        description: `Spend your days staring at fish, sharks, and eels!`,
+        price: 135,
+        ownerId: 3,
       },
     ]);
   },

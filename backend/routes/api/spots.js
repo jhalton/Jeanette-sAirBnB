@@ -4,7 +4,7 @@ const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
 const { setTokenCookie, requireAuth } = require("../../utils/auth");
-const { Spot } = require("../../db/models");
+const { Spot, Review, User, Image, sequelize } = require("../../db/models");
 const spot = require("../../db/models/spot");
 
 const router = express.Router();
@@ -37,20 +37,73 @@ const validateSpot = [
 ];
 
 //Get all spots
-// --> DONE
+// --> DONE. Could use some error middleware to handle null previewImage
 router.get("/", async (req, res) => {
-  const spots = await Spot.findAll();
+  const spots = await Spot.findAll({
+    attributes: {
+      include: [
+        [sequelize.fn("AVG", sequelize.col("Reviews.stars")), "avgRating"],
+      ],
+    },
+    include: [
+      {
+        model: Review,
+        attributes: [],
+      },
+      {
+        model: Image,
+        as: "SpotImages",
+        attributes: [["url", "previewImage"]],
+      },
+    ],
+    group: ["Spot.id"],
+  });
+
+  //To return the previewImage without the Images array
+  const spotsList = spots.map((spot) => {
+    const spotItem = spot.toJSON();
+    spotItem.previewImage = spotItem.SpotImages[0]?.previewImage;
+    delete spotItem.SpotImages;
+    return spotItem;
+  });
 
   res.status(200);
-  res.json({ Spots: spots });
+  res.json({ Spots: spotsList });
 });
 
 //Get details of a Spot from an id
-//-->needs Owner, SpotImages, review, ratings
+//-->Could maybe use middleware so previewImage shows up if null
+//DONE. Except for the above thought ^
 router.get("/:spotId", async (req, res) => {
   const spot = await Spot.findByPk(req.params.spotId, {
-    // include: [{ model: User }, { model: Review }, { model: SpotImage }],
+    attributes: {
+      include: [
+        [sequelize.fn("AVG", sequelize.col("Reviews.stars")), "avgRating"],
+        [sequelize.fn("COUNT", sequelize.col("Reviews.spotId")), "numReviews"],
+      ],
+    },
+    include: [
+      {
+        model: Review,
+        attributes: [],
+        where: {
+          spotId: req.params.spotId,
+        },
+      },
+      {
+        model: Image,
+        as: "SpotImages",
+        attributes: ["id", "url", "preview"],
+      },
+      {
+        model: User,
+        as: "Owner",
+        attributes: ["id", "firstName", "lastName"],
+      },
+    ],
+    group: ["SpotImages.id"],
   });
+
   if (!spot) {
     res.status(404);
     res.json({ message: "Spot couldn't be found" });
@@ -80,15 +133,15 @@ router.post("/", requireAuth, validateSpot, async (req, res) => {
   });
 
   const safeSpot = {
-    address: spot.address,
-    city: spot.city,
-    state: spot.state,
-    country: spot.country,
-    lat: spot.lat,
-    lng: spot.lng,
-    name: spot.name,
-    description: spot.description,
-    price: spot.price,
+    address: newSpot.address,
+    city: newSpot.city,
+    state: newSpot.state,
+    country: newSpot.country,
+    lat: newSpot.lat,
+    lng: newSpot.lng,
+    name: newSpot.name,
+    description: newSpot.description,
+    price: newSpot.price,
   };
 
   await setTokenCookie(res, safeSpot);
@@ -129,6 +182,7 @@ router.put("/:spotId", validateSpot, async (req, res) => {
     lng,
     name,
     description,
+    price,
   });
 
   res.status(200);
