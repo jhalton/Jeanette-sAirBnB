@@ -192,7 +192,7 @@ router.post(
       res.status(200);
       res.json(safeImage);
     } else {
-      const err = new Error(`Authorization`);
+      const err = new Error(`Authorization required.`);
       res.json({ message: err.message });
       return next(err);
     }
