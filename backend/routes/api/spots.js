@@ -178,8 +178,7 @@ router.post(
     const spot = await Spot.findByPk(req.params.spotId);
     if (!spot) {
       const err = new Error(`Spot couldn't be found`);
-      res.status(404);
-      res.json({ message: err.message });
+      err.status = 404;
       return next(err);
     }
 
@@ -192,12 +191,6 @@ router.post(
         imageableId: req.params.spotId,
         imageableType: "Spot",
       });
-      console.log(newImage);
-      // if (preview === true || preview === 1) {
-      //   newImage.preview = true;
-      // } else {
-      //   newImage.preview = false;
-      // }
 
       const safeImage = {
         id: newImage.id,
@@ -209,7 +202,7 @@ router.post(
       res.json(safeImage);
     } else {
       const err = new Error(`Authorization required.`);
-      res.json({ message: err.message });
+      err.status = 401;
       return next(err);
     }
   }
