@@ -8,7 +8,14 @@ const {
   requireAuth,
   restoreUser,
 } = require("../../utils/auth");
-const { User, Spot, Review, Image, sequelize } = require("../../db/models");
+const {
+  User,
+  Spot,
+  Review,
+  Image,
+  Booking,
+  sequelize,
+} = require("../../db/models");
 
 const router = express.Router();
 
@@ -170,4 +177,61 @@ router.get(
   }
   // }
 );
+
+//Get all of the Current User's Bookings
+//-->There is currently no error handling aside from whether or not a user is logged in
+//-->But regardless of whose userId I try to use, it only returns the current user.
+router.get(
+  "/:userId/bookings",
+  restoreUser,
+  requireAuth,
+  async (req, res, next) => {
+    const bookings = await Booking.findAll({
+      where: {
+        userId: req.user.id,
+      },
+    });
+    //Lazy load. Eager loading messes with the order and doesn't allow to insert nested.
+    const betterBookings = [];
+    for (let booking of bookings) {
+      const spot = await booking.getSpot({
+        attributes: [
+          "id",
+          "ownerId",
+          "address",
+          "city",
+          "state",
+          "country",
+          "lat",
+          "lng",
+          "name",
+          "price",
+        ],
+        include: [
+          {
+            model: Image,
+            as: "SpotImages",
+            attributes: [["url", "previewImage"]],
+          },
+        ],
+      });
+
+      const betterBooking = {
+        id: booking.id,
+        spotId: booking.spotId,
+        Spot: spot.toJSON(),
+        userId: booking.userId,
+        startDate: booking.startDate,
+        endDate: booking.endDate,
+        createdAt: booking.createdAt,
+        updatedAt: booking.updatedAt,
+      };
+      betterBookings.push(betterBooking);
+    }
+
+    res.status(200);
+    res.json({ Bookings: betterBookings });
+  }
+);
+
 module.exports = router;
