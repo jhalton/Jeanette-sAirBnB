@@ -8,7 +8,14 @@ const {
   requireAuth,
   restoreUser,
 } = require("../../utils/auth");
-const { Spot, Review, User, Image, sequelize } = require("../../db/models");
+const {
+  Spot,
+  Review,
+  User,
+  Image,
+  sequelize,
+  // validateReview,
+} = require("../../db/models");
 const spot = require("../../db/models/spot");
 
 const router = express.Router();
@@ -261,6 +268,7 @@ router.delete("/:spotId", restoreUser, requireAuth, async (req, res) => {
 });
 
 //Get all reviews by a Spot's id
+//--> DONE. ✓✓
 router.get("/:spotId/reviews", async (req, res, next) => {
   const spot = await Spot.findByPk(req.params.spotId);
   if (!spot) {
@@ -287,6 +295,66 @@ router.get("/:spotId/reviews", async (req, res, next) => {
   res.status(200);
   res.json(reviews);
 });
+
+//Create a Review for a Spot based on the Spot's id
+//Need to add validations to reviews
+
+//validator to check reviews and stars
+const validateReview = [
+  check("review")
+    .exists({ checkFalsy: true })
+    .withMessage(`Review text is required.`),
+  check("stars")
+    .isInt({ min: 1, max: 5 })
+    .withMessage(`Stars must be an integer from 1 to 5`),
+  handleValidationErrors,
+];
+
+router.post(
+  "/:spotId/reviews",
+  restoreUser,
+  requireAuth,
+  validateReview,
+  async (req, res, next) => {
+    const { review, stars } = req.body;
+    const spot = await Spot.findByPk(req.params.spotId);
+    if (!spot) {
+      res.status(404);
+      return res.json({ message: `Spot couldn't be found` });
+    }
+
+    //Verify that the current user doesn't already have a review for this spot
+    const existingUserReview = await Review.findAll({
+      where: {
+        userId: req.user.id,
+        spotId: req.params.spotId,
+      },
+    });
+
+    if (existingUserReview.length) {
+      res.status(500);
+      return res.json({ message: `User already has a review for this spot` });
+    }
+
+    const newReview = await spot.createReview({
+      userId: req.user.id,
+      spotId: spot.id,
+      review,
+      stars,
+    });
+
+    const safeReview = {
+      id: newReview.id,
+      userId: newReview.userId,
+      spotId: newReview.spotId,
+      review: newReview.review,
+      stars: newReview.stars,
+    };
+
+    res.status(201);
+    res.json(safeReview);
+  }
+);
 
 //
 module.exports = router;
