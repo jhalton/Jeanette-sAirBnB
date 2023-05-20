@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
+const { Op } = require("sequelize");
 
 const {
   setTokenCookie,
@@ -47,7 +48,7 @@ const validateSpot = [
     .withMessage("Price per day is required."),
   handleValidationErrors,
 ];
-
+//---------------------------------------------------------------------------------
 //Get all spots
 // --> Works locally. Could use some error middleware to handle null previewImage
 // --> Render hates my grouping.
@@ -83,7 +84,7 @@ router.get("/", async (req, res) => {
   res.status(200);
   res.json({ Spots: spotsList });
 });
-
+//--------------------------------------------------------------------------
 //Get details of a Spot from an id
 //-->Could maybe use middleware so previewImage shows up if null
 //DONE. Except for the above thought ^
@@ -123,7 +124,7 @@ router.get("/:spotId", async (req, res, next) => {
   res.status(200);
   res.json(spot);
 });
-
+//--------------------------------------------------------------------------
 //Create a Spot
 //-->Need to authenticate
 router.post("/", restoreUser, requireAuth, validateSpot, async (req, res) => {
@@ -164,7 +165,7 @@ router.post("/", restoreUser, requireAuth, validateSpot, async (req, res) => {
   res.status(201);
   return res.json(safeSpot);
 });
-
+//--------------------------------------------------------------------------
 //Add an Image to a Spot based on the Spot's id
 // --> Need to return the correct response body without createdAt and updatedAt
 // --> Returning correctly as a response
@@ -198,6 +199,7 @@ router.post(
         newImage.preview = false;
       }
 
+      await newImage.save();
       const safeImage = {
         id: newImage.id,
         url: newImage.url,
@@ -213,7 +215,7 @@ router.post(
     }
   }
 );
-
+//----------------------------------------------------------------------------
 //Edit a Spot
 //--> DONE.
 router.put(
@@ -257,7 +259,7 @@ router.put(
     res.json(updatedSpot);
   }
 );
-
+//-----------------------------------------------------------------------
 //Delete a Spot
 //DONE.
 router.delete("/:spotId", restoreUser, requireAuth, async (req, res) => {
@@ -273,7 +275,7 @@ router.delete("/:spotId", restoreUser, requireAuth, async (req, res) => {
   res.status(200);
   res.json({ message: "Successfully deleted" });
 });
-
+//---------------------------------------------------------------------
 //Get all reviews by a Spot's id
 //--> DONE. ✓✓
 router.get("/:spotId/reviews", async (req, res, next) => {
@@ -302,9 +304,9 @@ router.get("/:spotId/reviews", async (req, res, next) => {
   res.status(200);
   res.json(reviews);
 });
-
+//----------------------------------------------------------------
 //Create a Review for a Spot based on the Spot's id
-//Need to add validations to reviews
+//--> DONE. ✓✓
 
 //validator to check reviews and stars
 const validateReview = [
@@ -362,7 +364,7 @@ router.post(
     res.json(safeReview);
   }
 );
-
+//----------------------------------------------------------------
 //Get all Bookings for a Spot based on the Spot's id
 router.get(
   "/:spotId/bookings",
@@ -429,6 +431,104 @@ router.get(
     }
   }
 );
+//----------------------------------------------------------------------
 
+//custom validators
+const validateEndDate = (endDate, { req }) => {
+  const { startDate } = req.body;
+  if (endDate <= startDate) {
+    throw new Error(`endDate cannot be on or before startDate`);
+  }
+  return true;
+};
+
+//validator array
+const validateBooking = [
+  check("endDate").custom(validateEndDate),
+  handleValidationErrors,
+];
+
+//Create a Booking from a Spot based on the Spot's id
+router.post(
+  "/:spotId/bookings",
+  restoreUser,
+  requireAuth,
+  validateBooking,
+  async (req, res, next) => {
+    const spot = await Spot.findByPk(req.params.spotId);
+    const { startDate, endDate } = req.body;
+    //spot doesn't exist
+    if (!spot) {
+      const err = new Error(`Spot couldn't be found`);
+      err.status = 404;
+      res.status(err.status);
+      res.json({ message: err.message });
+      return next(err);
+    }
+
+    //startDate conflicts with an existing booking
+    const bookedStartDates = await Booking.findAll({
+      where: {
+        startDate,
+      },
+    });
+    let isBookedStart = false;
+    bookedStartDates.forEach((bookedDate) => {
+      if (bookedDate.spotId === spot.id) {
+        isBookedStart = true;
+      }
+    });
+
+    //endDate conflicts with an existing booking
+    const bookedEndDates = await Booking.findAll({
+      where: {
+        endDate,
+      },
+    });
+    let isBookedEnd = false;
+    bookedEndDates.forEach((bookedDate) => {
+      if (bookedDate.spotId === spot.id) {
+        isBookedEnd = true;
+      }
+    });
+
+    //to return an errors object with all the different errors
+    const errors = {};
+    if (isBookedStart)
+      errors.startDate = `Start date conflicts with an existing booking`;
+    if (isBookedEnd)
+      errors.endDate = `End date conflicts with an existing booking`;
+    if (isBookedStart || isBookedEnd) {
+      const errorMessage =
+        "Sorry, this spot is already booked for the specified dates";
+      const err = new Error(errorMessage);
+      err.status = 403;
+      err.errors = errors;
+      return next(err);
+    }
+
+    //if the user owns the spot
+    if (spot.ownerId === req.user.id) {
+      const err = new Error(`Cannot create booking for your own spot`);
+      err.status = 403;
+      res.status(err.status);
+      res.json({ message: err.message });
+      return next(err);
+    }
+    //spot does not belong to current user
+    else {
+      const newBooking = await spot.createBooking({
+        startDate,
+        endDate,
+        userId: req.user.id,
+      });
+      console.log("Loooooook hheeeeeeere", startDate, endDate);
+      res.status(200);
+      res.json(newBooking);
+    }
+  }
+);
+
+//-----------------------------------------------------------------------
 //
 module.exports = router;
