@@ -216,10 +216,15 @@ router.get(
         ],
       });
 
+      //To remove the SpotImages and return only the previewImage with the spot
+      const betterSpot = spot.toJSON();
+      betterSpot.previewImage = betterSpot.SpotImages?.[0]?.previewImage;
+      delete betterSpot.SpotImages;
+
       const betterBooking = {
         id: booking.id,
         spotId: booking.spotId,
-        Spot: spot.toJSON(),
+        Spot: betterSpot,
         userId: booking.userId,
         startDate: booking.startDate,
         endDate: booking.endDate,
