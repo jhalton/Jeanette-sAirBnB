@@ -29,9 +29,10 @@ module.exports = {
       {}
     );
 
-    await queryInterface.addIndex(options, ["address", "city", "state"], {
-      unique: true,
-    });
+    //COME BACK TO LATER
+    // await queryInterface.addIndex(options, ["address", "city", "state"], {
+    //   unique: true,
+    // });
   },
 
   async down(queryInterface, Sequelize) {

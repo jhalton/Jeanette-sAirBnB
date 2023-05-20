@@ -80,7 +80,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Spot",
-      indexes: [{ fields: ["address", "city", "state"], unique: true }],
+      // indexes: [{ fields: ["address", "city", "state"], unique: true }],
     }
   );
 
