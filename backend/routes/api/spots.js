@@ -297,7 +297,7 @@ router.get("/:spotId/reviews", async (req, res, next) => {
 });
 
 //Create a Review for a Spot based on the Spot's id
-//Need to add validations to reviews
+//--> DONE. ✓✓
 
 //validator to check reviews and stars
 const validateReview = [
