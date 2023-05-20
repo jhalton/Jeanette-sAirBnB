@@ -8,7 +8,8 @@ const {
   requireAuth,
   restoreUser,
 } = require("../../utils/auth");
-const { User, Spot, Review, sequelize } = require("../../db/models");
+const { User, Spot, Review, Image, sequelize } = require("../../db/models");
+const { ResultWithContextImpl } = require("express-validator/src/chain");
 
 const router = express.Router();
 
@@ -77,13 +78,62 @@ router.delete(
     } else {
       //if the review does NOT belong to the user
       const err = new Error(`Forbidden`);
-      err.title = `Authorization error`;
-      err.error = { message: "Forbidden" };
       err.status = 403;
-      res.status(403);
-      res.json({ message: `Forbidden` });
       return next(err);
     }
+  }
+);
+
+//------------------------------------------------------------------------
+//Add an Image to a Review based on the Review's id
+router.post(
+  "/:reviewId/images",
+  restoreUser,
+  requireAuth,
+  async (req, res, next) => {
+    const review = await Review.findByPk(req.params.reviewId);
+    const { url } = req.body;
+
+    //Review does not exist
+    if (!review) {
+      const err = new Error(`Review couldn't be found`);
+      err.status = 404;
+      return next(err);
+    }
+    //If review does not belong to the user
+    if (review.userId !== req.user.id) {
+      const err = new Error(`Forbidden`);
+      err.status = 403;
+      return next(err);
+    }
+
+    //If review has reached max limit of 10 images
+    const reviewImages = await Image.findAll({
+      where: {
+        imageableId: review.id,
+        imageableType: "Review",
+      },
+    });
+    if (reviewImages.length >= 10) {
+      const err = new Error(
+        `Maximum number of images for this resource was reached`
+      );
+      err.status = 403;
+      return next(err);
+    }
+
+    //Create new image for review
+    const newReviewImage = await review.createReviewImage({
+      url,
+    });
+
+    const safeReviewImage = {
+      id: newReviewImage.id,
+      url: newReviewImage.url,
+    };
+
+    res.status(200);
+    res.json(safeReviewImage);
   }
 );
 
