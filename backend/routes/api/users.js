@@ -92,8 +92,11 @@ router.get("/:userId", restoreUser, requireAuth, async (req, res) => {
 
 //Get all Spots owned by the Current User
 //--> DONE
-router.get("/:userId/spots", restoreUser, requireAuth, async (req, res) => {
-  if (parseInt(req.params.userId) === parseInt(req.user.id)) {
+router.get(
+  "/:userId/spots",
+  restoreUser,
+  requireAuth,
+  async (req, res, next) => {
     const spots = await Spot.findAll({
       where: {
         ownerId: parseInt(req.params.userId),
@@ -117,6 +120,13 @@ router.get("/:userId/spots", restoreUser, requireAuth, async (req, res) => {
       group: ["Spot.id", "SpotImages.id"],
     });
 
+    //If not the spots owner
+    if (spots[0].ownerId !== req.user.id) {
+      const err = new Error(`Forbidden`);
+      err.status = 404;
+      return next(err);
+    }
+
     //To return the previewImage without the Images array
     const spotsList = spots.map((spot) => {
       const spotItem = spot.toJSON();
@@ -127,11 +137,8 @@ router.get("/:userId/spots", restoreUser, requireAuth, async (req, res) => {
 
     res.status(200);
     res.json({ Spots: spotsList });
-  } else {
-    res.status(404);
-    res.json({ message: "Authorization required." });
   }
-});
+);
 
 //Get all Reviews of the Current User
 // --> need to auth current user
@@ -191,6 +198,7 @@ router.get(
         userId: req.user.id,
       },
     });
+
     //Lazy load. Eager loading messes with the order and doesn't allow to insert nested.
     const betterBookings = [];
     for (let booking of bookings) {
