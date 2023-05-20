@@ -176,6 +176,7 @@ router.post(
     const spot = await Spot.findByPk(req.params.spotId);
     if (!spot) {
       const err = new Error(`Spot couldn't be found`);
+      res.status(404);
       res.json({ message: err.message });
       return next(err);
     }
@@ -186,15 +187,23 @@ router.post(
       const newImage = await Image.create({
         url,
         preview,
+        imageableId: req.params.spotId,
+        imageableType: "Spot",
       });
+
+      if (preview === true || preview === 1) {
+        newImage.preview = true;
+      } else {
+        newImage.preview = false;
+      }
+
+      await newImage.save();
 
       const safeImage = {
         id: newImage.id,
         url: newImage.url,
         preview: newImage.preview,
       };
-
-      console.log(newImage);
 
       await spot.addSpotImages(newImage);
       res.status(200);
