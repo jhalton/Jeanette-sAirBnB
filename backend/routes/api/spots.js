@@ -80,10 +80,10 @@ const validateSpot = [
 //   handleValidationErrors,
 // ];
 
-router.get(
-  "/",
-  // validateQuery,
-  async (req, res) => {
+// router.get(
+//   "/",
+//   // validateQuery,
+//   async (req, res) => {
 //     let { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } =
 //       req.query;
 
@@ -133,62 +133,6 @@ router.get(
 //   }
 // );
 
-const { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } =
-  req.query;
-
-const where = {};
-if (minLat !== undefined) where.lat = { [Op.gte]: parseFloat(minLat) };
-if (maxLat !== undefined) where.lat = { [Op.lte]: parseFloat(maxLat) };
-if (minLng !== undefined) where.lng = { [Op.gte]: parseFloat(minLng) };
-if (maxLng !== undefined) where.lng = { [Op.lte]: parseFloat(maxLng) };
-if (minPrice !== undefined) where.price = { [Op.gte]: parseFloat(minPrice) };
-if (maxPrice !== undefined) where.price = { [Op.lte]: parseFloat(maxPrice) };
-
-const reviewedSpots = await Spot.findAll({
-  where,
-  attributes: [
-    "id",
-    "ownerId",
-    "address",
-    "city",
-    "state",
-    "country",
-    "lat",
-    "lng",
-    "name",
-    "description",
-    "price",
-    "createdAt",
-    "updatedAt",
-    [sequelize.fn("AVG", sequelize.col("Reviews.stars")), "avgRating"],
-  ],
-  include: [
-    {
-      model: Review,
-      attributes: [],
-    },
-    {
-      model: Image,
-      as: "SpotImages",
-      attributes: [["url", "previewImage"]],
-    },
-  ],
-  group: ["Spot.id", "SpotImages.id"],
-  limit: size,
-  offset: size * (page - 1),
-});
-
-//To return the previewImage without the Images array
-const spotsList = reviewedSpots.map((spot) => {
-  const spotItem = spot.toJSON();
-  spotItem.previewImage = spotItem.SpotImages[0]?.previewImage;
-  delete spotItem.SpotImages;
-  return spotItem;
-});
-
-res.status(200);
-res.json({ Spots: spotsList, page, size });
-  }
 //--------------------------------------------------------------------------
 //Get details of a Spot from an id
 //-->Could maybe use middleware so previewImage shows up if null
