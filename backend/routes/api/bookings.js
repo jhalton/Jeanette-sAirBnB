@@ -2,13 +2,21 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
+const { Op } = require("sequelize");
 
 const {
   setTokenCookie,
   requireAuth,
   restoreUser,
 } = require("../../utils/auth");
-const { User, Spot, Review, Image, sequelize } = require("../../db/models");
+const {
+  User,
+  Spot,
+  Booking,
+  Review,
+  Image,
+  sequelize,
+} = require("../../db/models");
 
 const router = express.Router();
 
@@ -22,23 +30,31 @@ router.put("/:bookingId", restoreUser, requireAuth, async (req, res, next) => {
   //Booking doesn't exist
   if (!updatedBooking) {
     res.status(404);
-    res.json({ message: `Booking couldn't be found` });
+    return res.json({ message: `Booking couldn't be found` });
+  }
+
+  //Handles if the booking does not belong to the current user
+  if (parseInt(updatedBooking.userId) !== parseInt(req.user.id)) {
+    res.status(403);
+    return res.json({ message: `Forbidden` });
   }
 
   //Can't edit a booking that is past its endDate
   /*
   If the CURRENT date is past the endDate of the booking, throw Error
   */
-  const currentDate = new Date();
+  let currentDate = new Date();
+  currentDate = currentDate.toISOString().slice(0, 10);
   if (updatedBooking.endDate < currentDate) {
     res.status(403);
-    res.json({ message: `Past bookings can't be modified` });
+    return res.json({ message: `Past bookings can't be modified` });
   }
 
   //Deal with conflicting end and start dates
   const bookedStartDates = await Booking.findAll({
     where: {
       startDate,
+      id: { [Op.not]: updatedBooking.id },
     },
   });
   let isBookedStart = false;
@@ -52,6 +68,7 @@ router.put("/:bookingId", restoreUser, requireAuth, async (req, res, next) => {
   const bookedEndDates = await Booking.findAll({
     where: {
       endDate,
+      id: { [Op.not]: updatedBooking.id },
     },
   });
   let isBookedEnd = false;
@@ -76,7 +93,7 @@ router.put("/:bookingId", restoreUser, requireAuth, async (req, res, next) => {
     return next(err);
   }
 
-  updatedBooking.update({
+  await updatedBooking.update({
     startDate,
     endDate,
   });
