@@ -192,14 +192,13 @@ router.post(
         imageableId: req.params.spotId,
         imageableType: "Spot",
       });
+      console.log(newImage);
+      // if (preview === true || preview === 1) {
+      //   newImage.preview = true;
+      // } else {
+      //   newImage.preview = false;
+      // }
 
-      if (preview === true || preview === 1) {
-        newImage.preview = true;
-      } else {
-        newImage.preview = false;
-      }
-
-      await newImage.save();
       const safeImage = {
         id: newImage.id,
         url: newImage.url,
