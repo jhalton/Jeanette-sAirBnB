@@ -4,7 +4,7 @@ const router = express.Router();
 
 const apiRouter = require("./api");
 router.use("/api", apiRouter);
-
+const { restoreUser } = require("../utils/auth.js");
 //THIS IS JUST A TEST ROUTE
 // router.get("/hello/world", function (req, res) {
 //   res.cookie("XSRF-TOKEN", req.csrfToken());

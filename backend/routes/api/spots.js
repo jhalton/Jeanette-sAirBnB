@@ -50,88 +50,140 @@ const validateSpot = [
 ];
 //---------------------------------------------------------------------------------
 //Get all spots
-// --> Adding querying to this function breaks my aggregation. I am sad. I liked it.
 
-// const validateQuery = [
-//   check("page")
-//     .isInt({ min: 1 })
-//     .withMessage(`Page must be greater than or equal to 1`),
-//   check("size")
-//     .isInt({ min: 1 })
-//     .withMessage(`Size must be greater than or equal to 1`),
-//   check("maxLat")
-//     .isDecimal({ checkFalsy: true })
-//     .withMessage(`Maximum latitude is invalid`),
-//   check("minLat")
-//     .isDecimal({ checkFalsy: true })
-//     .withMessage(`Maximum latitude is invalid`),
-//   check("maxLng")
-//     .isDecimal({ checkFalsy: true })
-//     .withMessage(`Maximum longitude is invalid`),
-//   check("minLng")
-//     .isDecimal({ checkFalsy: true })
-//     .withMessage(`Maximum longitude is invalid`),
-//   check("minPrice")
-//     .isDecimal({ min: 0 })
-//     .withMessage(`Minimum price must be greater than or equal to 0`),
-//   check("maxPrice")
-//     .isDecimal({ min: 0 })
-//     .withMessage(`Maximum price must be greater than or equal to 0`),
-//   handleValidationErrors,
-// ];
+const validateQuery = [
+  check("page")
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage(`Page must be greater than or equal to 1`),
+  check("size")
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage(`Size must be greater than or equal to 1`),
+  check("maxLat")
+    .optional()
+    .isDecimal({ checkFalsy: true })
+    .withMessage(`Maximum latitude is invalid`),
+  check("minLat")
+    .optional()
+    .isDecimal({ checkFalsy: true })
+    .withMessage(`Maximum latitude is invalid`),
+  check("maxLng")
+    .optional()
+    .isDecimal({ checkFalsy: true })
+    .withMessage(`Maximum longitude is invalid`),
+  check("minLng")
+    .optional()
+    .isDecimal({ checkFalsy: true })
+    .withMessage(`Maximum longitude is invalid`),
+  check("minPrice")
+    .optional()
+    .isDecimal({ min: 0 })
+    .withMessage(`Minimum price must be greater than or equal to 0`),
+  check("maxPrice")
+    .optional()
+    .isDecimal({ min: 0 })
+    .withMessage(`Maximum price must be greater than or equal to 0`),
+  handleValidationErrors,
+];
 
-// router.get(
-//   "/",
-//   // validateQuery,
-//   async (req, res) => {
-//     let { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } =
-//       req.query;
+router.get("/", validateQuery, async (req, res) => {
+  let { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } =
+    req.query;
 
-//     let limit;
-//     let offset;
+  let limit;
+  let offset;
 
-//     page = parseInt(page);
-//     size = parseInt(size);
+  page = parseInt(page);
+  size = parseInt(size);
 
-//     if (isNaN(page) || !page) page = 1;
-//     if (page > 10) page = 10;
-//     if (isNaN(size) || !size) size = 20;
+  if (isNaN(page) || !page) page = 1;
+  if (page > 10) page = 10;
+  if (isNaN(size) || !size) size = 20;
 
-//     const where = {};
-//     if (minLat !== undefined) where.minLat = parseFloat(minLat);
-//     if (maxLat !== undefined) where.maxLat = parseFloat(maxLat);
-//     if (minLng !== undefined) where.minLng = parseFloat(minLng);
-//     if (maxLng !== undefined) where.maxLng = parseFloat(maxLng);
-//     if (minPrice !== undefined) where.minPrice = parseFloat(minPrice);
-//     if (maxPrice !== undefined) where.maxPrice = parseFloat(maxPrice);
+  const where = {};
+  if (minLat !== undefined) {
+    where.lat = { [Op.gte]: parseInt(minLat) };
+  }
 
-//     const spots = await Spot.findAll({
-//       where, //pass in our query
-//       // limit: size,
-//       // offset: size * (page - 1),
-//     });
+  if (maxLat !== undefined) {
+    where.lat = { [Op.lte]: parseInt(maxLat) };
+  }
 
-//     const spotIds = spots.map((spot) => {
-//       return spot.id;
-//     });
+  if (minLng !== undefined) {
+    where.lng = { [Op.gte]: parseInt(minLng) };
+  }
 
-//     const reviewedSpots = spotIds.map((spot) => {
-//       return [sequelize.fn("AVG", sequelize.col("Reviews.stars")), "avgRating"];
-//     });
-//     console.log(reviewedSpots);
+  if (maxLng !== undefined) {
+    where.lng = { [Op.lte]: parseInt(maxLng) };
+  }
 
-//     // //To return the previewImage without the Images array
-//     // const spotsList = spots.map((spot) => {
-//     //   const spotItem = spot.toJSON();
-//     //   spotItem.previewImage = spotItem.SpotImages[0]?.previewImage;
-//     //   delete spotItem.SpotImages;
-//     //   return spotItem;
-//     // });
+  if (minPrice !== undefined) {
+    where.price = { [Op.gte]: parseInt(minPrice) };
+    console.log(minPrice);
+  }
 
-//     res.status(200);
-//     res.json({ Spots: spots, page, size });
-//   }
-// );
+  if (maxPrice !== undefined) {
+    where.price = { [Op.lte]: parseInt(maxPrice) };
+  }
+
+  const allSpots = await Spot.findAll({
+    where, //pass in our query
+    limit: size,
+    offset: size * (page - 1),
+  });
+
+  const payload = [];
+  for (let i = 0; i < allSpots.length; i++) {
+    const spot = allSpots[i];
+    //get avgRating
+    const reviewsPromise = Review.findAll({
+      where: {
+        spotId: spot.id,
+      },
+      attributes: ["stars"],
+    });
+
+    //get previewImage
+    const previewImagePromise = Image.findOne({
+      where: {
+        imageableId: spot.id,
+        imageableType: "Spot",
+        preview: true,
+      },
+    });
+
+    const [reviews, previewImage] = await Promise.all([
+      reviewsPromise,
+      previewImagePromise,
+    ]);
+
+    const sumRating = reviews.reduce((accum, num) => accum + num.stars, 0);
+    const avgRating = sumRating / reviews.length;
+
+    const spotData = {
+      id: spot.id,
+      ownerId: spot.ownerId,
+      address: spot.address,
+      city: spot.city,
+      state: spot.state,
+      country: spot.country,
+      lat: spot.lat,
+      lng: spot.lng,
+      name: spot.name,
+      description: spot.description,
+      price: spot.price,
+      createdAt: spot.createdAt,
+      updatedAt: spot.updatedAt,
+      avgRating: avgRating,
+      previewImage: previewImage.url,
+    };
+    payload.push(spotData);
+  }
+
+  res.status(200);
+  res.json({ Spots: payload, page, size });
+});
 
 //--------------------------------------------------------------------------
 //Get details of a Spot from an id
@@ -227,8 +279,7 @@ router.post(
     const spot = await Spot.findByPk(req.params.spotId);
     if (!spot) {
       const err = new Error(`Spot couldn't be found`);
-      res.status(404);
-      res.json({ message: err.message });
+      err.status = 404;
       return next(err);
     }
 
@@ -241,12 +292,6 @@ router.post(
         imageableId: req.params.spotId,
         imageableType: "Spot",
       });
-      console.log(newImage);
-      // if (preview === true || preview === 1) {
-      //   newImage.preview = true;
-      // } else {
-      //   newImage.preview = false;
-      // }
 
       const safeImage = {
         id: newImage.id,
@@ -258,7 +303,7 @@ router.post(
       res.json(safeImage);
     } else {
       const err = new Error(`Authorization required.`);
-      res.json({ message: err.message });
+      err.status = 401;
       return next(err);
     }
   }
