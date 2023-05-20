@@ -11,6 +11,7 @@ const {
 const {
   Spot,
   Review,
+  Booking,
   User,
   Image,
   sequelize,
@@ -359,6 +360,73 @@ router.post(
 
     res.status(201);
     res.json(safeReview);
+  }
+);
+
+//Get all Bookings for a Spot based on the Spot's id
+router.get(
+  "/:spotId/bookings",
+  restoreUser,
+  requireAuth,
+  async (req, res, next) => {
+    const spot = await Spot.findByPk(req.params.spotId);
+
+    //if there isn't a spot for the given id
+    if (!spot) {
+      const err = new Error(`Spot couldn't be found`);
+      err.status = 404;
+      res.status(err.status);
+      res.json({ message: err.message });
+      return next(err);
+    }
+
+    //if user IS NOT the owner
+    if (spot.ownerId !== req.user.id) {
+      const bookings = await Booking.findAll({
+        where: {
+          spotId: spot.id,
+        },
+        attributes: ["spotId", "startDate", "endDate"],
+      });
+      res.status(200);
+      res.json({ Bookings: bookings });
+    }
+    //if user IS the owner
+    if (spot.ownerId === req.user.id) {
+      const bookings = await Booking.findAll({
+        where: {
+          spotId: spot.id,
+        },
+      });
+
+      const bookedUsersById = bookings.map((booking) => booking.userId);
+
+      const visitors = await User.findAll({
+        where: {
+          id: bookedUsersById,
+        },
+        attributes: ["id", "firstName", "lastName"],
+      });
+
+      const ownerBookings = bookings.map((booking) => {
+        const visitor = visitors.find(
+          (visitor) => visitor.id === booking.userId
+        );
+
+        return {
+          User: visitor,
+          id: booking.id,
+          spotId: booking.spotId,
+          userId: booking.userId,
+          startDate: booking.startDate,
+          endDate: booking.endDate,
+          createdAt: booking.createdAt,
+          updatedAt: booking.updatedAt,
+        };
+      });
+      res.status(200);
+      res.json({ Bookings: ownerBookings });
+    }
   }
 );
 
