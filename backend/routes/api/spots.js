@@ -175,12 +175,20 @@ router.post(
     }
 
     if (parseInt(spot.ownerId) === parseInt(req.user.id)) {
-      const { id, url, preview } = req.body;
+      const { url, preview } = req.body;
 
       const newImage = await Image.create({
         url,
         preview,
+        imageableType: "Spot",
+        imageableId: spot.id,
       });
+
+      if (newImage.preview) {
+        newImage.preview = true;
+      } else {
+        newImage.preview = false;
+      }
 
       const safeImage = {
         id: newImage.id,
