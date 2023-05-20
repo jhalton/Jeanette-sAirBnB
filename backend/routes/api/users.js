@@ -76,7 +76,7 @@ router.post("/", validateSignup, async (req, res, next) => {
     user: safeUser,
   });
 });
-
+//-----------------------------------------------------------------------
 //Get the Current User
 //--> This is working. Do I need to set another scope for this to allow email?
 router.get("/:userId", restoreUser, requireAuth, async (req, res) => {
@@ -90,8 +90,10 @@ router.get("/:userId", restoreUser, requireAuth, async (req, res) => {
   }
 });
 
+//---------------------------------------------------------------------
+
 //Get all Spots owned by the Current User
-//--> DONE
+//--> DONE. Returns correct info on Render, but Tristan couldn't access it?
 router.get("/:userId/spots", restoreUser, requireAuth, async (req, res) => {
   if (parseInt(req.params.userId) === parseInt(req.user.id)) {
     const spots = await Spot.findAll({
@@ -133,9 +135,9 @@ router.get("/:userId/spots", restoreUser, requireAuth, async (req, res) => {
   }
 });
 
-//Get all Reviews of the Current User
-// --> need to auth current user
+//---------------------------------------------------------------------
 
+//Get all Reviews of the Current User
 router.get(
   "/:userId/reviews",
   restoreUser,
@@ -177,6 +179,8 @@ router.get(
   }
   // }
 );
+
+//----------------------------------------------------------------------
 
 //Get all of the Current User's Bookings
 //-->There is currently no error handling aside from whether or not a user is logged in
