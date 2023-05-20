@@ -11,6 +11,7 @@ const {
 const {
   Spot,
   Review,
+  Booking,
   User,
   Image,
   sequelize,
@@ -166,8 +167,8 @@ router.post("/", restoreUser, requireAuth, validateSpot, async (req, res) => {
 
 //Add an Image to a Spot based on the Spot's id
 // --> Need to return the correct response body without createdAt and updatedAt
-// --> It also isn't returning the id
-// --> When I try to deploy this endpoint, I get an error saying "column \"commentableId\" does not exist"
+// --> Returning correctly as a response
+// --> Isn't adding the preview value to the database
 router.post(
   "/:spotId/images",
   restoreUser,
@@ -176,6 +177,7 @@ router.post(
     const spot = await Spot.findByPk(req.params.spotId);
     if (!spot) {
       const err = new Error(`Spot couldn't be found`);
+      res.status(404);
       res.json({ message: err.message });
       return next(err);
     }
@@ -183,10 +185,18 @@ router.post(
     if (parseInt(spot.ownerId) === parseInt(req.user.id)) {
       const { url, preview } = req.body;
 
-      const newImage = await Image.create({
+      const newImage = await spot.createSpotImage({
         url,
         preview,
+        imageableId: req.params.spotId,
+        imageableType: "Spot",
       });
+
+      if (preview === true || preview === 1) {
+        newImage.preview = true;
+      } else {
+        newImage.preview = false;
+      }
 
       const safeImage = {
         id: newImage.id,
@@ -194,9 +204,6 @@ router.post(
         preview: newImage.preview,
       };
 
-      console.log(newImage);
-
-      await spot.addSpotImages(newImage);
       res.status(200);
       res.json(safeImage);
     } else {
@@ -353,6 +360,73 @@ router.post(
 
     res.status(201);
     res.json(safeReview);
+  }
+);
+
+//Get all Bookings for a Spot based on the Spot's id
+router.get(
+  "/:spotId/bookings",
+  restoreUser,
+  requireAuth,
+  async (req, res, next) => {
+    const spot = await Spot.findByPk(req.params.spotId);
+
+    //if there isn't a spot for the given id
+    if (!spot) {
+      const err = new Error(`Spot couldn't be found`);
+      err.status = 404;
+      res.status(err.status);
+      res.json({ message: err.message });
+      return next(err);
+    }
+
+    //if user IS NOT the owner
+    if (spot.ownerId !== req.user.id) {
+      const bookings = await Booking.findAll({
+        where: {
+          spotId: spot.id,
+        },
+        attributes: ["spotId", "startDate", "endDate"],
+      });
+      res.status(200);
+      res.json({ Bookings: bookings });
+    }
+    //if user IS the owner
+    if (spot.ownerId === req.user.id) {
+      const bookings = await Booking.findAll({
+        where: {
+          spotId: spot.id,
+        },
+      });
+
+      const bookedUsersById = bookings.map((booking) => booking.userId);
+
+      const visitors = await User.findAll({
+        where: {
+          id: bookedUsersById,
+        },
+        attributes: ["id", "firstName", "lastName"],
+      });
+
+      const ownerBookings = bookings.map((booking) => {
+        const visitor = visitors.find(
+          (visitor) => visitor.id === booking.userId
+        );
+
+        return {
+          User: visitor,
+          id: booking.id,
+          spotId: booking.spotId,
+          userId: booking.userId,
+          startDate: booking.startDate,
+          endDate: booking.endDate,
+          createdAt: booking.createdAt,
+          updatedAt: booking.updatedAt,
+        };
+      });
+      res.status(200);
+      res.json({ Bookings: ownerBookings });
+    }
   }
 );
 
