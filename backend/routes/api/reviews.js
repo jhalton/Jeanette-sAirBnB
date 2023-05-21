@@ -125,7 +125,8 @@ router.post(
     //Create new image for review
     const newReviewImage = await review.createReviewImage({
       url,
-      userId: req.user.id,
+      imageableId: review.id,
+      imageableType: "Review",
     });
 
     const safeReviewImage = {
