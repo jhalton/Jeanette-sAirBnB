@@ -29,14 +29,16 @@ router.put("/:bookingId", requireAuth, async (req, res, next) => {
 
   //Booking doesn't exist
   if (!updatedBooking) {
-    res.status(404);
-    return res.json({ message: `Booking couldn't be found` });
+    const err = new Error(`Booking couldn't be found`);
+    err.status = 404;
+    return next(err);
   }
 
   //Handles if the booking does not belong to the current user
   if (parseInt(updatedBooking.userId) !== parseInt(req.user.id)) {
-    res.status(403);
-    return res.json({ message: `Forbidden` });
+    const err = new Error(`Forbidden`);
+    err.status = 404;
+    return next(err);
   }
 
   //Can't edit a booking that is past its endDate
@@ -46,8 +48,9 @@ router.put("/:bookingId", requireAuth, async (req, res, next) => {
   let currentDate = new Date();
   currentDate = currentDate.toISOString().slice(0, 10);
   if (updatedBooking.endDate < currentDate) {
-    res.status(403);
-    return res.json({ message: `Past bookings can't be modified` });
+    const err = new Error(`Past bookings can't be modified`);
+    err.status = 403;
+    return next(err);
   }
 
   //Deal with conflicting end and start dates

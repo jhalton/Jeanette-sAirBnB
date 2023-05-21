@@ -32,9 +32,9 @@ router.put(
   async (req, res, next) => {
     const foundReview = await Review.findByPk(req.params.reviewId);
     if (!foundReview) {
-      res.status(404);
-      res.json({ message: `Review couldn't be found` });
-      return;
+      const err = new Error(`Review couldn't be found`);
+      err.status = 404;
+      return next(err);
     }
     const { review, stars } = req.body;
     if (foundReview.userId === req.user.id) {
@@ -45,8 +45,9 @@ router.put(
       res.status(200);
       res.json(updatedReview);
     } else {
-      res.status(403);
-      res.json({ message: "Forbidden" });
+      const err = new Error(`Forbidden`);
+      err.status = 403;
+      return next(err);
     }
   }
 );
