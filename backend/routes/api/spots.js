@@ -264,8 +264,6 @@ router.post("/", requireAuth, validateSpot, async (req, res, next) => {
     updatedAt: newSpot.updatedAt,
   };
 
-  setTokenCookie(res, safeSpot);
-
   res.status(201);
   return res.json(safeSpot);
 });

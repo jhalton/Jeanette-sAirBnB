@@ -33,7 +33,7 @@ module.exports = {
           type: Sequelize.TEXT,
         },
         stars: {
-          type: Sequelize.DECIMAL,
+          type: Sequelize.DECIMAL(2, 1),
         },
         createdAt: {
           allowNull: false,
