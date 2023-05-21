@@ -102,28 +102,28 @@ router.get("/", validateQuery, async (req, res, next) => {
   if (isNaN(size) || !size) size = 20;
 
   const where = {};
-  if (minLat !== undefined) {
+  if (minLat !== undefined && maxLat !== undefined) {
+    where.lat = { [Op.between]: [parseInt(minLat), parseInt(maxLat)] };
+  } else if (minLat !== undefined) {
     where.lat = { [Op.gte]: parseInt(minLat) };
-  }
-
-  if (maxLat !== undefined) {
+  } else if (maxLat !== undefined) {
     where.lat = { [Op.lte]: parseInt(maxLat) };
   }
 
-  if (minLng !== undefined) {
+  if (minLng !== undefined && maxLng !== undefined) {
+    where.lng = { [Op.between]: [parseInt(minLng), parseInt(maxLng)] };
+  } else if (minLng !== undefined) {
     where.lng = { [Op.gte]: parseInt(minLng) };
-  }
-
-  if (maxLng !== undefined) {
+  } else if (maxLng !== undefined) {
     where.lng = { [Op.lte]: parseInt(maxLng) };
   }
 
-  if (minPrice !== undefined) {
+  if (minPrice !== undefined && maxPrice !== undefined) {
+    where.price = { [Op.between]: [parseInt(minPrice), parseInt(maxPrice)] };
+  } else if (minPrice !== undefined) {
     where.price = { [Op.gte]: parseInt(minPrice) };
     console.log(minPrice);
-  }
-
-  if (maxPrice !== undefined) {
+  } else if (maxPrice !== undefined) {
     where.price = { [Op.lte]: parseInt(maxPrice) };
   }
 
