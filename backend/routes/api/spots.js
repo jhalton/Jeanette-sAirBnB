@@ -196,7 +196,14 @@ router.get("/:spotId", async (req, res, next) => {
   const spot = await Spot.findByPk(req.params.spotId, {
     attributes: {
       include: [
-        [sequelize.fn("AVG", sequelize.col("Reviews.stars")), "avgRating"],
+        [
+          sequelize.fn(
+            "ROUND",
+            sequelize.fn("AVG", sequelize.col("Reviews.stars")),
+            1
+          ),
+          "avgRating",
+        ],
         [sequelize.fn("COUNT", sequelize.col("Reviews.spotId")), "numReviews"],
       ],
     },
