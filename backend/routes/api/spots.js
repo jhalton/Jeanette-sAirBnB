@@ -158,7 +158,10 @@ router.get("/", validateQuery, async (req, res) => {
       previewImagePromise,
     ]);
 
-    const sumRating = reviews.reduce((accum, num) => accum + num.stars, 0);
+    const sumRating = reviews.reduce(
+      (accum, num) => accum + parseInt(num.stars),
+      0
+    );
     const avgRating = sumRating / reviews.length;
 
     const spotData = {
