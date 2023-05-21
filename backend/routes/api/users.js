@@ -78,8 +78,7 @@ router.post("/", validateSignup, async (req, res, next) => {
 });
 //-----------------------------------------------------------------------
 //Get the Current User
-//--> This is working. Do I need to set another scope for this to allow email?
-router.get("/:userId", restoreUser, requireAuth, async (req, res) => {
+router.get("/:userId", restoreUser, requireAuth, async (req, res, next) => {
   if (parseInt(req.params.userId) === parseInt(req.user.id)) {
     const user = await User.findByPk(req.params.userId);
     res.status(200);
@@ -94,60 +93,55 @@ router.get("/:userId", restoreUser, requireAuth, async (req, res) => {
 
 //Get all Spots owned by the Current User
 //--> DONE. Returns correct info on Render, but Tristan couldn't access it?
-router.get(
-  "/:userId/spots",
-  restoreUser,
-  requireAuth,
-  async (req, res, next) => {
-    const spots = await Spot.findAll({
-      where: {
-        ownerId: parseInt(req.params.userId),
-      },
-      attributes: {
-        include: [
-          [sequelize.fn("AVG", sequelize.col("Reviews.stars")), "avgRating"],
-        ],
-      },
+router.get("/:userId/spots", requireAuth, async (req, res, next) => {
+  const spots = await Spot.findAll({
+    where: {
+      ownerId: parseInt(req.params.userId),
+    },
+    attributes: {
       include: [
-        {
-          model: Review,
-          attributes: [],
-        },
-        {
-          model: Image,
-          as: "SpotImages",
-          attributes: [["url", "previewImage"]],
-        },
+        [sequelize.fn("AVG", sequelize.col("Reviews.stars")), "avgRating"],
       ],
-      group: ["Spot.id", "SpotImages.id"],
-    });
+    },
+    include: [
+      {
+        model: Review,
+        attributes: [],
+      },
+      {
+        model: Image,
+        as: "SpotImages",
+        attributes: [["url", "previewImage"]],
+      },
+    ],
+    group: ["Spot.id", "SpotImages.id"],
+  });
 
-    //If not the spots owner
-    if (spots[0].ownerId !== req.user.id) {
-      const err = new Error(`Forbidden`);
-      err.status = 404;
-      return next(err);
-    }
-
-    //To return the previewImage without the Images array
-    const spotsList = spots.map((spot) => {
-      const spotItem = spot.toJSON();
-      spotItem.previewImage = spotItem.SpotImages[0]?.previewImage;
-      delete spotItem.SpotImages;
-      return spotItem;
-    });
-
-    res.status(200);
-    res.json({ Spots: spotsList });
+  //If not the spots owner
+  if (spots[0].ownerId !== req.user.id) {
+    const err = new Error(`Forbidden`);
+    err.status = 404;
+    return next(err);
   }
-);
+
+  //To return the previewImage without the Images array
+  const spotsList = spots.map((spot) => {
+    const spotItem = spot.toJSON();
+    spotItem.previewImage = spotItem.SpotImages[0]?.previewImage;
+    delete spotItem.SpotImages;
+    return spotItem;
+  });
+
+  res.status(200);
+  res.json({ Spots: spotsList });
+});
 
 //---------------------------------------------------------------------
 
 //Get all Reviews of the Current User
 router.get(
   "/:userId/reviews",
-  restoreUser,
+
   requireAuth,
   async (req, res, next) => {
     // if (parseInt(req.params.userId) === parseInt(req.user.id)) {
@@ -192,63 +186,58 @@ router.get(
 //Get all of the Current User's Bookings
 //-->There is currently no error handling aside from whether or not a user is logged in
 //-->But regardless of whose userId I try to use, it only returns the current user.
-router.get(
-  "/:userId/bookings",
-  restoreUser,
-  requireAuth,
-  async (req, res, next) => {
-    const bookings = await Booking.findAll({
-      where: {
-        userId: req.user.id,
-      },
+router.get("/:userId/bookings", requireAuth, async (req, res, next) => {
+  const bookings = await Booking.findAll({
+    where: {
+      userId: req.user.id,
+    },
+  });
+
+  //Lazy load. Eager loading messes with the order and doesn't allow to insert nested.
+  const betterBookings = [];
+  for (let booking of bookings) {
+    const spot = await booking.getSpot({
+      attributes: [
+        "id",
+        "ownerId",
+        "address",
+        "city",
+        "state",
+        "country",
+        "lat",
+        "lng",
+        "name",
+        "price",
+      ],
+      include: [
+        {
+          model: Image,
+          as: "SpotImages",
+          attributes: [["url", "previewImage"]],
+        },
+      ],
     });
 
-    //Lazy load. Eager loading messes with the order and doesn't allow to insert nested.
-    const betterBookings = [];
-    for (let booking of bookings) {
-      const spot = await booking.getSpot({
-        attributes: [
-          "id",
-          "ownerId",
-          "address",
-          "city",
-          "state",
-          "country",
-          "lat",
-          "lng",
-          "name",
-          "price",
-        ],
-        include: [
-          {
-            model: Image,
-            as: "SpotImages",
-            attributes: [["url", "previewImage"]],
-          },
-        ],
-      });
+    //To remove the SpotImages and return only the previewImage with the spot
+    const betterSpot = spot.toJSON();
+    betterSpot.previewImage = betterSpot.SpotImages?.[0]?.previewImage;
+    delete betterSpot.SpotImages;
 
-      //To remove the SpotImages and return only the previewImage with the spot
-      const betterSpot = spot.toJSON();
-      betterSpot.previewImage = betterSpot.SpotImages?.[0]?.previewImage;
-      delete betterSpot.SpotImages;
-
-      const betterBooking = {
-        id: booking.id,
-        spotId: booking.spotId,
-        Spot: betterSpot,
-        userId: booking.userId,
-        startDate: booking.startDate,
-        endDate: booking.endDate,
-        createdAt: booking.createdAt,
-        updatedAt: booking.updatedAt,
-      };
-      betterBookings.push(betterBooking);
-    }
-
-    res.status(200);
-    res.json({ Bookings: betterBookings });
+    const betterBooking = {
+      id: booking.id,
+      spotId: booking.spotId,
+      Spot: betterSpot,
+      userId: booking.userId,
+      startDate: booking.startDate,
+      endDate: booking.endDate,
+      createdAt: booking.createdAt,
+      updatedAt: booking.updatedAt,
+    };
+    betterBookings.push(betterBooking);
   }
-);
+
+  res.status(200);
+  res.json({ Bookings: betterBookings });
+});
 
 module.exports = router;

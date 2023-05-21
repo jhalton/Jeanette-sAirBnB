@@ -27,7 +27,6 @@ const validateReview = [
 //
 router.put(
   "/:reviewId",
-  restoreUser,
   requireAuth,
   validateReview,
   async (req, res, next) => {
@@ -56,7 +55,7 @@ router.put(
 //
 router.delete(
   "/:reviewId",
-  restoreUser,
+
   requireAuth,
   async (req, res, next) => {
     const review = await Review.findByPk(req.params.reviewId);
@@ -88,7 +87,7 @@ router.delete(
 //Add an Image to a Review based on the Review's id
 router.post(
   "/:reviewId/images",
-  restoreUser,
+
   requireAuth,
   async (req, res, next) => {
     const review = await Review.findByPk(req.params.reviewId);

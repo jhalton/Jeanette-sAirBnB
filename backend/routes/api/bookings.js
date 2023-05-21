@@ -22,7 +22,7 @@ const router = express.Router();
 
 //Edit a Booking
 
-router.put("/:bookingId", restoreUser, requireAuth, async (req, res, next) => {
+router.put("/:bookingId", requireAuth, async (req, res, next) => {
   const { startDate, endDate } = req.body;
 
   const updatedBooking = await Booking.findByPk(req.params.bookingId);
@@ -103,38 +103,33 @@ router.put("/:bookingId", restoreUser, requireAuth, async (req, res, next) => {
 
 //---------------------------------------------------------------------------
 //Delete a Booking
-router.delete(
-  "/:bookingId",
-  restoreUser,
-  requireAuth,
-  async (req, res, next) => {
-    const booking = await Booking.findByPk(req.params.bookingId);
-    //Booking doesn't exist
-    if (!booking) {
-      const err = new Error(`Booking couldn't be found`);
-      err.status = 404;
-      return next(err);
-    }
-
-    //Not an authorized user
-    if (booking.userId !== req.user.id) {
-      const err = new Error(`Forbidden`);
-      err.status = 403;
-      return next(err);
-    }
-
-    //If current date is past start date
-    let currentDate = new Date();
-    currentDate = currentDate.toISOString().slice(0, 10);
-    if (booking.startDate < currentDate) {
-      const err = new Error(`Bookings that have been started can't be deleted`);
-      err.status = 403;
-      return next(err);
-    }
-
-    await booking.destroy();
-    res.status(200);
-    res.json({ message: `Successfully deleted` });
+router.delete("/:bookingId", requireAuth, async (req, res, next) => {
+  const booking = await Booking.findByPk(req.params.bookingId);
+  //Booking doesn't exist
+  if (!booking) {
+    const err = new Error(`Booking couldn't be found`);
+    err.status = 404;
+    return next(err);
   }
-);
+
+  //Not an authorized user
+  if (booking.userId !== req.user.id) {
+    const err = new Error(`Forbidden`);
+    err.status = 403;
+    return next(err);
+  }
+
+  //If current date is past start date
+  let currentDate = new Date();
+  currentDate = currentDate.toISOString().slice(0, 10);
+  if (booking.startDate < currentDate) {
+    const err = new Error(`Bookings that have been started can't be deleted`);
+    err.status = 403;
+    return next(err);
+  }
+
+  await booking.destroy();
+  res.status(200);
+  res.json({ message: `Successfully deleted` });
+});
 module.exports = router;

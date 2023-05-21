@@ -13,7 +13,7 @@ const { User, Image, Spot, Review, sequelize } = require("../../db/models");
 const router = express.Router();
 
 //Delete a Spot Image
-router.delete("/:imageId", restoreUser, requireAuth, async (req, res, next) => {
+router.delete("/:imageId", requireAuth, async (req, res, next) => {
   const image = await Image.findByPk(req.params.imageId, {
     where: {
       imageableType: "Spot",
@@ -43,7 +43,7 @@ router.delete("/:imageId", restoreUser, requireAuth, async (req, res, next) => {
 //------------------------------------------------------------------------
 
 //Delete a Review Image
-router.delete("/:imageId", restoreUser, requireAuth, async (req, res, next) => {
+router.delete("/:imageId", requireAuth, async (req, res, next) => {
   const image = await Image.findByPk(req.params.imageId, {
     where: {
       imageableType: "Review",
