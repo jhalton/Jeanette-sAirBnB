@@ -162,7 +162,7 @@ router.get("/", validateQuery, async (req, res, next) => {
       (accum, num) => accum + parseInt(num.stars),
       0
     );
-    const avgRating = sumRating / reviews.length;
+    const avgRating = (sumRating / reviews.length).toFixed(1);
 
     const spotData = {
       id: spot.id,
