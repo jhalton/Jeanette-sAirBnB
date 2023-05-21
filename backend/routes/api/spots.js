@@ -309,8 +309,13 @@ router.put("/:spotId", requireAuth, validateSpot, async (req, res, next) => {
   const spot = await Spot.findByPk(req.params.spotId);
   if (!spot) {
     const err = new Error(`Spot couldn't be found`);
-    res.json({ message: err.message });
-    res.status(404);
+    err.status = 404;
+    return next(err);
+  }
+
+  if (spot.ownerId !== req.user.id) {
+    const err = new Error(`Forbidden`);
+    err.status = 403;
     return next(err);
   }
   const { address, city, state, country, lat, lng, name, description, price } =
@@ -336,10 +341,15 @@ router.put("/:spotId", requireAuth, validateSpot, async (req, res, next) => {
 router.delete("/:spotId", requireAuth, async (req, res, next) => {
   const spot = await Spot.findByPk(req.params.spotId);
   if (!spot) {
-    res.status(404);
-    return res.json({
-      message: `Spot couldn't be found`,
-    });
+    const err = new Error(`Spot couldn't be found`);
+    err.status = 404;
+    return next(err);
+  }
+
+  if (spot.ownerId !== req.user.id) {
+    const err = new Error(`Forbidden`);
+    err.status = 403;
+    return next(err);
   }
 
   await spot.destroy();
@@ -409,8 +419,9 @@ router.post(
     });
 
     if (existingUserReview.length) {
-      res.status(500);
-      return res.json({ message: `User already has a review for this spot` });
+      const err = new Error(`User already has a review for this spot`);
+      err.status = 500;
+      return next(err);
     }
 
     const newReview = await spot.createReview({
@@ -521,8 +532,6 @@ router.post(
     if (!spot) {
       const err = new Error(`Spot couldn't be found`);
       err.status = 404;
-      res.status(err.status);
-      res.json({ message: err.message });
       return next(err);
     }
 
@@ -559,11 +568,10 @@ router.post(
     if (isBookedEnd)
       errors.endDate = `End date conflicts with an existing booking`;
     if (isBookedStart || isBookedEnd) {
-      const errorMessage =
-        "Sorry, this spot is already booked for the specified dates";
-      const err = new Error(errorMessage);
+      const err = new Error(
+        `Sorry, this spot is already booked for the specified dates`
+      );
       err.status = 403;
-      err.errors = errors;
       return next(err);
     }
 
