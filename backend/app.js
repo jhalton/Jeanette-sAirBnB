@@ -71,7 +71,7 @@ app.use((err, _req, res, _next) => {
   res.status(err.status || 500);
   console.error(err);
   if (isProduction) {
-    res.json({
+    return res.json({
       message: err.message,
       errors: err.errors,
     });
