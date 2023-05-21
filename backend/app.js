@@ -70,6 +70,12 @@ app.use((err, _req, _res, next) => {
 app.use((err, _req, res, _next) => {
   res.status(err.status || 500);
   console.error(err);
+  if (isProduction) {
+    return res.json({
+      message: err.message,
+      errors: err.errors,
+    });
+  }
   res.json({
     title: err.title || "Server Error",
     message: err.message,
