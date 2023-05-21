@@ -62,11 +62,7 @@ router.delete(
     //if there is no review that matches params
     if (!review) {
       const err = new Error(`Review couldn't be found`);
-      err.title = `Review couldn't be found`;
-      err.errors = { message: `Review couldn't be found` };
       err.status = 404;
-      res.status(404);
-      res.json({ message: `Review couldn't be found` });
       return next(err);
     }
     //if the review belongs to the user

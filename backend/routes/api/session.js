@@ -4,7 +4,11 @@ const bcrypt = require("bcryptjs");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
-const { setTokenCookie, restoreUser } = require("../../utils/auth");
+const {
+  setTokenCookie,
+  restoreUser,
+  requireAuth,
+} = require("../../utils/auth");
 const { User } = require("../../db/models");
 const router = express.Router();
 
@@ -55,11 +59,15 @@ router.post("/", validateLogin, async (req, res, next) => {
   });
 });
 
+//------------------------------------------------------------
+
 // Log out
 router.delete("/", (_req, res) => {
   res.clearCookie("token");
   return res.json({ message: "success" });
 });
+
+//--------------------------------------------------------------
 
 // Restore session user
 router.get("/", (req, res) => {
@@ -77,5 +85,7 @@ router.get("/", (req, res) => {
     });
   } else return res.json({ user: null });
 });
+
+//-----------------------------------------------------------------
 
 module.exports = router;

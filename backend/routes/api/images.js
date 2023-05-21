@@ -13,7 +13,7 @@ const { User, Image, Spot, Review, sequelize } = require("../../db/models");
 const router = express.Router();
 
 //Delete a Spot Image
-router.delete("/:imageId", requireAuth, async (req, res, next) => {
+router.delete("/:imageId/spots", requireAuth, async (req, res, next) => {
   const image = await Image.findByPk(req.params.imageId, {
     where: {
       imageableType: "Spot",
@@ -43,32 +43,36 @@ router.delete("/:imageId", requireAuth, async (req, res, next) => {
 //------------------------------------------------------------------------
 
 //Delete a Review Image
-router.delete("/:imageId", requireAuth, async (req, res, next) => {
-  const image = await Image.findByPk(req.params.imageId, {
-    where: {
-      imageableType: "Review",
-    },
-  });
+router.delete("/:imageId/reviews", requireAuth, async (req, res, next) => {
+  try {
+    const image = await Image.findByPk(req.params.imageId, {
+      where: {
+        imageableType: "Review",
+      },
+    });
 
-  //Review Image does not exist
-  if (!image) {
-    const err = new Error(`Review Image couldn't be found`);
-    err.status = 404;
-    return next(err);
+    //Review Image does not exist
+    if (!image) {
+      const err = new Error(`Review Image couldn't be found`);
+      err.status = 404;
+      return next(err);
+    }
+
+    //Review does not belong to user
+    const review = await Review.findByPk(image.imageableId);
+    if (review.userId !== req.user.id) {
+      const err = new Error(`Forbidden`);
+      err.status = 403;
+      return next(err);
+    }
+
+    //Delete the review image
+    await image.destroy();
+    res.status(200);
+    res.json({ message: `Successfully deleted` });
+  } catch (error) {
+    console.log(error);
   }
-
-  //Review does not belong to user
-  const review = await Review.findByPk(image.imageableId);
-  if (review.userId !== req.user.id) {
-    const err = new Error(`Forbidden`);
-    err.status = 403;
-    return next(err);
-  }
-
-  //Delete the review image
-  await image.destroy();
-  res.status(200);
-  res.json({ message: `Successfully deleted` });
 });
 
 module.exports = router;

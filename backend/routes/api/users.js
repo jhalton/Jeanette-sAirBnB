@@ -41,15 +41,26 @@ router.post("/", validateSignup, async (req, res, next) => {
   const { email, password, username, firstName, lastName } = req.body;
   const hashedPassword = bcrypt.hashSync(password);
   //if username or password already exists, throw error
-  const existingUser = await User.findAll({
+  const existingUsername = await User.findAll({
     where: {
       username,
+    },
+  });
+
+  const existingEmail = await User.findAll({
+    where: {
       email,
     },
   });
 
-  if (existingUser.length) {
-    const err = new Error(`Username or email already exists.`);
+  if (existingUsername.length) {
+    const err = new Error(`Username already exists.`);
+    err.statusCode = 500;
+    next(err);
+  }
+
+  if (existingEmail.length) {
+    const err = new Error(`Username already exists.`);
     err.statusCode = 500;
     next(err);
   }
@@ -77,10 +88,11 @@ router.post("/", validateSignup, async (req, res, next) => {
   });
 });
 //-----------------------------------------------------------------------
+
 //Get the Current User
-router.get("/:userId", restoreUser, requireAuth, async (req, res, next) => {
-  if (parseInt(req.params.userId) === parseInt(req.user.id)) {
-    const user = await User.findByPk(req.params.userId);
+router.get("/me", requireAuth, async (req, res, next) => {
+  const user = await User.findByPk(req.user.id);
+  if (user) {
     res.status(200);
     res.json({ user: user });
   } else {
@@ -92,11 +104,10 @@ router.get("/:userId", restoreUser, requireAuth, async (req, res, next) => {
 //---------------------------------------------------------------------
 
 //Get all Spots owned by the Current User
-//--> DONE. Returns correct info on Render, but Tristan couldn't access it?
-router.get("/:userId/spots", requireAuth, async (req, res, next) => {
+router.get("/me/spots", requireAuth, async (req, res, next) => {
   const spots = await Spot.findAll({
     where: {
-      ownerId: parseInt(req.params.userId),
+      ownerId: parseInt(req.user.id),
     },
     attributes: {
       include: [
@@ -116,13 +127,7 @@ router.get("/:userId/spots", requireAuth, async (req, res, next) => {
     ],
     group: ["Spot.id", "SpotImages.id"],
   });
-
-  //If not the spots owner
-  if (spots[0].ownerId !== req.user.id) {
-    const err = new Error(`Forbidden`);
-    err.status = 404;
-    return next(err);
-  }
+  //
 
   //To return the previewImage without the Images array
   const spotsList = spots.map((spot) => {
@@ -140,14 +145,13 @@ router.get("/:userId/spots", requireAuth, async (req, res, next) => {
 
 //Get all Reviews of the Current User
 router.get(
-  "/:userId/reviews",
+  "/me/reviews",
 
   requireAuth,
   async (req, res, next) => {
-    // if (parseInt(req.params.userId) === parseInt(req.user.id)) {
     const reviews = await Review.findAll({
       where: {
-        userId: req.params.userId,
+        userId: req.user.id,
       },
       include: [
         { model: User, attributes: ["id", "firstName", "lastName"] },
@@ -178,15 +182,12 @@ router.get(
     res.status(200);
     res.json({ Reviews: betterReviews });
   }
-  // }
 );
 
 //----------------------------------------------------------------------
 
 //Get all of the Current User's Bookings
-//-->There is currently no error handling aside from whether or not a user is logged in
-//-->But regardless of whose userId I try to use, it only returns the current user.
-router.get("/:userId/bookings", requireAuth, async (req, res, next) => {
+router.get("/me/bookings", requireAuth, async (req, res, next) => {
   const bookings = await Booking.findAll({
     where: {
       userId: req.user.id,
