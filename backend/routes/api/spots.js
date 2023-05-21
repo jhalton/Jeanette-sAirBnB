@@ -176,7 +176,7 @@ router.get("/", validateQuery, async (req, res) => {
       createdAt: spot.createdAt,
       updatedAt: spot.updatedAt,
       avgRating: avgRating,
-      previewImage: previewImage.url,
+      previewImage: previewImage?.url,
     };
     payload.push(spotData);
   }
