@@ -100,7 +100,7 @@ information.
 - Request
 
   - Method: POST
-  - URL: /api/users/login
+  - URL: /api/session/login
   - Headers:
     - Content-Type: application/json
   - Body:
