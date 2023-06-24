@@ -21,7 +21,7 @@ export const removeUser = () => {
 //thunk action creator to set session user
 export const login = (user) => async (dispatch) => {
   const { credential, password } = user;
-  const res = await csrfFetch("/api/session", {
+  const res = await csrfFetch("/api/session/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

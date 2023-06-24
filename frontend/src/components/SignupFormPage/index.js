@@ -107,6 +107,9 @@ const SignupFormPage = () => {
           />
         </label>
         {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+        <button type="submit" onClick={handleSubmit}>
+          Submit
+        </button>
       </form>
     </>
   );
