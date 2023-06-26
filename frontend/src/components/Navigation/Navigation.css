@@ -7,6 +7,7 @@
   flex-direction: row;
   justify-content: center;
   width: 500px;
+  justify-content: baseline;
 }
 
 .nav-button {
@@ -29,4 +30,14 @@
 .nav-button:hover {
   background-color: rgb(248, 248, 248);
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4);
+}
+
+.profile-button {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal-button {
+  display: flex;
+  flex-direction: row;
 }

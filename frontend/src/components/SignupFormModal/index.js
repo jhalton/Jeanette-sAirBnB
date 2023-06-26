@@ -1,12 +1,12 @@
 import React, { useState } from "react";
+import { useModal } from "../../context/Modal";
 import * as sessionActions from "../../store/session";
-import { useDispatch, useSelector } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import "./SignupForm.css";
 
-const SignupFormPage = () => {
+const SignupFormModal = () => {
   const dispatch = useDispatch();
-  const sessionUser = useSelector((state) => state.session.user);
+
   const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -14,9 +14,7 @@ const SignupFormPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
-
-  //if a user is already logged in, redirect to '/'
-  if (sessionUser) return <Redirect to="/" />;
+  const { closeModal } = useModal();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -31,12 +29,14 @@ const SignupFormPage = () => {
           lastName,
           password,
         })
-      ).catch(async (res) => {
-        const data = await res.json();
-        if (data && data.errors) {
-          setErrors(data.errors);
-        }
-      });
+      )
+        .then(closeModal)
+        .catch(async (res) => {
+          const data = await res.json();
+          if (data && data.errors) {
+            setErrors(data.errors);
+          }
+        });
     }
     return setErrors({
       confirmPassword: "Password and Confirm Password fields must be the same",
@@ -45,7 +45,7 @@ const SignupFormPage = () => {
 
   return (
     <div className="signup-form">
-      <h1 className={"signup-form signup-header"}>Signup</h1>
+      <h1 className={"signup-form signup-header"}>Sign Up</h1>
       <form onSubmit={handleSubmit} className="signup-form">
         <input
           className="signup-input"
@@ -112,7 +112,7 @@ const SignupFormPage = () => {
         />
 
         {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
-        <button className="signup-input" type="submit" onClick={handleSubmit}>
+        <button className="signup-button" type="submit" onClick={handleSubmit}>
           Submit
         </button>
       </form>
@@ -120,4 +120,4 @@ const SignupFormPage = () => {
   );
 };
 
-export default SignupFormPage;
+export default SignupFormModal;

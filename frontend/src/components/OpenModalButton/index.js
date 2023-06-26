@@ -16,7 +16,9 @@ const OpenModalButton = ({
 
   return (
     <div>
-      <button onClick={onClick}>{buttonText}</button>
+      <button className="nav-button" onClick={onClick}>
+        {buttonText}
+      </button>
     </div>
   );
 };
