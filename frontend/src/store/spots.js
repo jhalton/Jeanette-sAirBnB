@@ -95,6 +95,15 @@ export const createSpot = (data) => async (dispatch) => {
   return newSpot;
 };
 
+//get spots of current user
+export const getCurrentUserSpots = () => async (dispatch) => {
+  const res = await csrfFetch("/api/users/me/spots");
+  const data = await res.json();
+  console.log("THUNK DATA");
+  dispatch(loadSpot(data));
+  return res;
+};
+
 //reducer
 const initialState = {};
 const spotReducer = (state = initialState, action) => {
