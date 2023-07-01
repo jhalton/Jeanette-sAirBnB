@@ -31,12 +31,8 @@ const validateSpot = [
   check("country")
     .exists({ checkFalsy: true })
     .withMessage("Country is required"),
-  check("lat")
-    .exists({ checkFalsy: true })
-    .withMessage("Latitude is not valid."),
-  check("lng")
-    .exists({ checkFalsy: true })
-    .withMessage("Longitude is not valid"),
+  check("lat").optional(),
+  check("lng").optional(),
   check("name")
     .isLength({ max: 49 })
     .withMessage("Name must be less than 50 characters"),
@@ -162,7 +158,7 @@ router.get("/", validateQuery, async (req, res, next) => {
       (accum, num) => accum + parseInt(num.stars),
       0
     );
-    const avgRating = (sumRating / reviews.length).toFixed(1);
+    const avgRating = Number(sumRating / reviews.length).toFixed(1);
 
     const spotData = {
       id: spot.id,

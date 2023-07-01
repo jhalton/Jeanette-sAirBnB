@@ -15,9 +15,9 @@ const DropDownMenu = ({ isLoaded }) => {
   let sessionLinks;
   if (sessionUser) {
     sessionLinks = (
-      <li className={"nav-button profile-button"}>
+      <div className={"nav-button profile-button"}>
         <ProfileButton user={sessionUser} />
-      </li>
+      </div>
     );
   } else {
     sessionLinks = (
@@ -46,6 +46,7 @@ const DropDownMenu = ({ isLoaded }) => {
     <div className="dropdown">
       <button className="nav-button" onClick={toggleMenu}>
         <i className="fa-solid fa-bars"></i>
+        <i className="fas fa-user-circle" />
       </button>
 
       {dropDown && sessionLinks}

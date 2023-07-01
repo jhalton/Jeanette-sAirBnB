@@ -36,11 +36,11 @@ module.exports = {
         },
         lat: {
           type: Sequelize.NUMERIC,
-          allowNull: false,
+          allowNull: true,
         },
         lng: {
           type: Sequelize.NUMERIC,
-          allowNull: false,
+          allowNull: true,
         },
         description: {
           type: Sequelize.TEXT,

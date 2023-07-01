@@ -53,11 +53,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       lat: {
         type: DataTypes.NUMERIC,
-        allowNull: false,
+        allowNull: true,
       },
       lng: {
         type: DataTypes.NUMERIC,
-        allowNull: false,
+        allowNull: true,
       },
       description: {
         type: DataTypes.TEXT,

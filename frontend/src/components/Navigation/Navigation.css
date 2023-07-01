@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  width: 500px;
+  width: 100%;
   justify-content: baseline;
 }
 
@@ -25,6 +25,9 @@
   flex-direction: row;
   margin: 15px;
   list-style-type: none;
+  justify-content: space-between;
+  width: 100%;
+  align-items: baseline;
 }
 
 .nav-button:hover {
@@ -40,4 +43,22 @@
 .modal-button {
   display: flex;
   flex-direction: row;
+}
+
+.nav-right-side {
+  display: flex;
+  flex-direction: row;
+}
+
+.new-spot-navlink-container {
+  border-radius: 15px;
+  padding-top: 3px;
+  padding-bottom: 2px;
+}
+.new-spot-navlink-container:hover {
+  background-color: rgb(240, 239, 239);
+}
+.create-new-spot-link {
+  text-decoration: none;
+  color: black;
 }
