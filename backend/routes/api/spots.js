@@ -306,37 +306,51 @@ router.post("/:spotId/images", requireAuth, async (req, res, next) => {
 });
 //----------------------------------------------------------------------------
 //Edit a Spot
-router.put("/:spotId", requireAuth, validateSpot, async (req, res, next) => {
-  const spot = await Spot.findByPk(req.params.spotId);
-  if (!spot) {
-    const err = new Error(`Spot couldn't be found`);
-    err.status = 404;
-    return next(err);
+router.put(
+  "/:spotId/update",
+  requireAuth,
+  validateSpot,
+  async (req, res, next) => {
+    const spot = await Spot.findByPk(req.params.spotId);
+    if (!spot) {
+      const err = new Error(`Spot couldn't be found`);
+      err.status = 404;
+      return next(err);
+    }
+
+    if (spot.ownerId !== req.user.id) {
+      const err = new Error(`Forbidden`);
+      err.status = 403;
+      return next(err);
+    }
+    const {
+      address,
+      city,
+      state,
+      country,
+      lat,
+      lng,
+      name,
+      description,
+      price,
+    } = req.body;
+
+    const updatedSpot = await spot.update({
+      address,
+      city,
+      state,
+      country,
+      lat,
+      lng,
+      name,
+      description,
+      price,
+    });
+
+    res.status(200);
+    res.json(updatedSpot);
   }
-
-  if (spot.ownerId !== req.user.id) {
-    const err = new Error(`Forbidden`);
-    err.status = 403;
-    return next(err);
-  }
-  const { address, city, state, country, lat, lng, name, description, price } =
-    req.body;
-
-  const updatedSpot = await spot.update({
-    address,
-    city,
-    state,
-    country,
-    lat,
-    lng,
-    name,
-    description,
-    price,
-  });
-
-  res.status(200);
-  res.json(updatedSpot);
-});
+);
 //-----------------------------------------------------------------------
 //Delete a Spot
 router.delete("/:spotId", requireAuth, async (req, res, next) => {

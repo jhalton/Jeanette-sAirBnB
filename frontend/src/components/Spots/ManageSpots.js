@@ -20,21 +20,23 @@ Each spot in the spot tile list on the spot management page should contain an ad
 
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getCurrentUserSpots } from "../../store/spots";
+import { getCurrentUserSpots } from "../../store/sessionUserSpots";
 import { useHistory, NavLink } from "react-router-dom";
+import OpenModalButton from "../OpenModalButton";
+import DeleteSpotModal from "../DeleteSpotModal";
 
 const ManageSpots = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const user = useSelector((state) => state.session.user);
-  const userSpots = useSelector((state) => Object.values(state.spot)).filter(
-    (spot) => spot.ownerId === user.id
-  );
+  // const userSpots = useSelector((state) =>
+  //   Object.values(state.userSpots)
+  // ).filter((spot) => spot?.ownerId === user.id);
+  const userSpots = useSelector((state) => Object.values(state.userSpots));
+  console.log("MANAGE SPOTS", userSpots);
 
-  console.log("LOOK HERE USER SPOTS", userSpots);
-  console.log("LOOK HERE USER.ID", user.id);
   useEffect(() => {
-    dispatch(getCurrentUserSpots());
+    dispatch(getCurrentUserSpots(user.id));
   }, [dispatch, user]);
 
   if (!userSpots.length) {
@@ -48,32 +50,41 @@ const ManageSpots = () => {
   }
 
   return (
-    <div>
+    <div className="manage-spots-div">
       <h1>Manage Spots</h1>
-      <ul>
+      <ul className="manage-spots-ul">
         {userSpots.map((spot) => (
-          <li key={spot.id}>
+          <li key={spot.id} className="manage-spots-li">
             <img
               className="spot-image"
-              style={{ width: "500px" }}
               src={spot.previewImage}
               alt={spot.name}
               onClick={() => history.push(`/api/spots/${spot.id}`)}
             />
 
             <div className="manage-spots-text">
-              <p>
+              <p className="manage-spots-location">
                 {spot.city}, {spot.state}
               </p>
-              <p>${spot.price} / night</p>
-              <p>
+              <p className="manage-spots-price">${spot.price} / night</p>
+              <p className="manage-spots-rating">
                 <i className="fa-solid fa-star"></i>
                 {Number(spot.avgRating) ? spot.avgRating : "New!"}
               </p>
-            </div>
-            <div className="management-buttons">
-              <button>Update</button>
-              <button>Delete</button>
+              <div className="management-buttons">
+                <button
+                  className="update-button"
+                  onClick={() => history.push(`/api/spots/${spot.id}/update`)}
+                >
+                  Update
+                </button>
+                {/* <button>Delete</button> */}
+                <OpenModalButton
+                  className="delete-button"
+                  buttonText="Delete"
+                  modalComponent={<DeleteSpotModal spot={spot} />}
+                />
+              </div>
             </div>
           </li>
         ))}

@@ -1,14 +1,102 @@
+.landing-page-div {
+  display: grid;
+
+  list-style-type: none;
+}
+
+.landing-page-ul {
+  display: grid;
+  list-style-type: none;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+.landing-page-ul > li {
+  grid-template-areas:
+    "image   image   image   image"
+    "image   image   image   image"
+    "image   image   image   image"
+    "image   image   image   image"
+    "location  .       .     rating"
+    "price      .       .        .  ";
+}
+
+.spot-image {
+  grid-area: image;
+}
+
+.landing-page-location {
+  grid-area: location;
+}
+
+.landing-page-rating {
+  grid-area: rating;
+}
+
+.landing-page-price {
+  grid-area: price;
+}
+
 .spot-image:hover {
   cursor: pointer;
 }
 
-.landing-page-spot-text {
+.spot-image {
+  border-radius: 10px;
+  width: 25vw;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* .landing-page-spot-text {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-}
+} */
 
 /* SpotDetail */
+.spot-detail-images {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "previewImg previewImg addtlImg1 addtlImg2"
+    "previewImg previewImg addtlImg3 addtlImg4";
+}
+
+.spot-detail-preview-image {
+  border-radius: 10px;
+  width: 50vw;
+  object-fit: cover;
+  object-position: center;
+  padding: 2px;
+}
+
+.spot-detail-additional-image {
+  border-radius: 10px;
+  width: 25vw;
+  object-fit: cover;
+  object-position: center;
+  padding: 2px;
+}
+
+.grid-item-0 {
+  grid-area: previewImg;
+}
+
+.grid-item-1 {
+  grid-area: addtlImg1;
+}
+.grid-item-2 {
+  grid-area: addtlImg2;
+}
+.grid-item-3 {
+  grid-area: addtlImg3;
+}
+.grid-item-4 {
+  grid-area: addtlImg4;
+}
+
 .spot-detail-info-box {
   display: flex;
   flex-direction: row;
@@ -61,4 +149,62 @@
   display: flex;
   align-items: center;
   width: 100%;
+}
+
+/* ----------------------------------------------------------- */
+/* Manage Spots */
+.manage-spots-div {
+  display: grid;
+  list-style-type: none;
+  overflow: auto;
+}
+
+.manage-spots-ul {
+  display: grid;
+  list-style-type: none;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+.manage-spots-text {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-areas:
+    "manage-location    .         .           manage-rating"
+    "manage-price        .         .              . "
+    "update      delete      .              . ";
+  overflow: auto;
+}
+
+.manage-spots-location {
+  grid-area: manage-location;
+}
+
+.manage-spots-price {
+  grid-area: manage-price;
+}
+
+.manage-spots-rating {
+  grid-area: manage-rating;
+}
+
+.update-button {
+  grid-area: update;
+  background-color: #ec3355;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  width: 100%;
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.4);
+}
+
+.delete-button {
+  grid-area: delete;
+  background-color: #ec3355;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  width: 100%;
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.4);
 }

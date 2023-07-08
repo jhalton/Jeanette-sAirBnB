@@ -25,32 +25,33 @@ import { useHistory } from "react-router-dom";
 
 const LandingPage = () => {
   const dispatch = useDispatch();
-  const spots = useSelector((state) => Object.values(state.spot));
+  const spots = useSelector((state) => Object.values(state.allSpots));
   const history = useHistory();
+  const defaultPreview =
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmhPnAShm7aN-oG4DPzlFYcN4EGNnNVjtyiQ&usqp=CAU";
 
   useEffect(() => {
     dispatch(getAllSpots());
   }, [dispatch]);
 
   return (
-    <div>
-      <ul>
+    <div className="landing-page-div">
+      <ul className="landing-page-ul">
         {spots.map((spot) => (
           <li key={spot.id}>
             <img
               className="spot-image"
-              style={{ width: "500px" }}
-              src={spot.previewImage}
+              src={spot.previewImage || defaultPreview}
               alt={spot.name}
               onClick={() => history.push(`/api/spots/${spot.id}`)}
             />
 
             <div className="landing-page-spot-text">
-              <p>
+              <p className="landing-page-location">
                 {spot.city}, {spot.state}
               </p>
-              <p>${spot.price} / night</p>
-              <p>
+              <p className="landing-page-price">${spot.price} / night</p>
+              <p className="landing-page-rating">
                 <i className="fa-solid fa-star"></i>
                 {Number(spot.avgRating) ? spot.avgRating : "New!"}
               </p>

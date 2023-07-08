@@ -1,81 +1,51 @@
 /*
 User Stories
--As an authenticated user, I want to create a spot to include in the listings.
--As an authenticated user, if I make a mistake while creating a spot, I want 
-useful error messages (a.k.a. validation).
--As an authenticated user, when I successfully create a spot, I want to see its 
-details immediately.
+As an authenticated user, I want to update a spot I created.
+NOTE:
+The image update on a spot is not required for MVP.
 
 Acceptance Criteria
-
-✓ -There should be a "Create a New Spot" button in the navigation bar to the left
- of the User Menu button for logged-in users.
-✓ -Upon clicking the "Create a New Spot" button, the user should be navigated to a 
-blank form to gather the data for a new spot (see wireframe).
-✓ -On the new spot form, there should be: a title at the top with the text "Create
- a New Spot".
-✓✓-The first section should include: ✓ a heading of "Where's your place located?", a 
-✓ caption of "Guests will only get your exact address once they booked a 
-reservation.", and text inputs with labels and placeholders for "Country", 
-"Street Address", "City", and "State" ("Latitude" and "Longitude" inputs are 
-optional for MVP) [DO I HAVE TO INCLUDE LABELS?]
-✓✓-The second section should include: ✓  a heading of "Describe your place to guests",
- ✓ a caption of "Mention the best features of your space, any special amentities
-  like fast wifi or parking, and what you love about the neighborhood.", and  ✓ a 
-  text area with a placeholder of "Please write at least 30 characters".
-✓✓ -The third section should include: ✓ a heading of "Create a title for your spot",
- ✓ a caption of "Catch guests' attention with a spot title that highlights what 
- makes your place special.", and a text input with a placeholder of "Name of 
- your spot".
-✓✓-The fourth section should include: a heading of "Set a base price for your spot"
-, a caption of "Competitive pricing can help your listing stand out and rank 
-higher in search results.", and a number input with a placeholder of "Price per
- night (USD)".
-✓✓ -The fifth section should include: a heading of "Liven up your spot with photos",
- a caption of "Submit a link to at least one photo to publish your spot.", and 
- five text inputs where the first input has a placeholder of "Preview Image URL"
-  and the rest of the inputs have a placeholder of "Image URL".
-✓✓-The submit button should have the text of "Create Spot".
--Validation messages must show at the top of the form or under each field with an
- error if the user tries to submit an incomplete form. Examples: a * Required 
- Field: " is required" (e.g. "Price per night is required", etc.), a Description
-  Min Length: "Description needs 30 or more characters". Out of the five image 
-  URL inputs, only the first Image URL input (the Preview Image URL) is required.
--When a spot is successfully created, the user should automatically be navigated 
-to the new spot's detail page.
--Navigating away and back to the create spot form form resets any errors and 
-clears all data entered, so it displays in the default state (no errors, *empty 
-    inputs, button disabled).
+✓Clicking "Update" on one of the spot tiles on the spot management
+    page navigates the user to the update spot form which looks like 
+    the same as the create a new spot form, but pre-populated with the 
+    values stored in the database for the spot that was clicked, the 
+    title changed to "Update your Spot", and with a submit button text 
+    of "Update your Spot". Image URL inputs on the update spot form are 
+    optional for MVP.
+✓When the update form submission is successful, the user is navigated 
+    to the updated spot's details page.
+✓The updated spot's detail page should display the updated information. No refresh should be necessary.
 */
-import { useDispatch } from "react-redux";
-import { createSpot } from "../../store/sessionUserSpots";
-import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import "./Spots.css";
-import { createPreviewImage, createAdditionalImage } from "../../store/images";
 
-const CreateNewSpot = () => {
+import { useDispatch, useSelector } from "react-redux";
+import { updateSpot } from "../../store/sessionUserSpots";
+import { useState, useEffect } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import "./Spots.css";
+
+const UpdateSpot = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const { spotId } = useParams();
+  const spot = useSelector((state) => state.spot[parseInt(spotId)]);
 
-  const [country, setCountry] = useState("");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
+  console.log("LOOK HERE UPDATE SPOT.ID", spot);
+
+  const [country, setCountry] = useState(spot.country);
+  const [address, setAddress] = useState(spot.address);
+  const [city, setCity] = useState(spot.city);
+  const [state, setState] = useState(spot.state);
   //   const [lat, setLat] = useState("");
   //   const [lng, setLng] = useState("");
-  const [description, setDescription] = useState("");
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [previewImage, setPreviewImage] = useState("");
-  const [image1, setImage1] = useState("");
-  const [image2, setImage2] = useState("");
-  const [image3, setImage3] = useState("");
-  const [image4, setImage4] = useState("");
+  const [description, setDescription] = useState(spot.description);
+  const [name, setName] = useState(spot.name);
+  const [price, setPrice] = useState(spot.price);
+  const [previewImage, setPreviewImage] = useState(
+    spot.previewImage ||
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmhPnAShm7aN-oG4DPzlFYcN4EGNnNVjtyiQ&usqp=CAU"
+  );
+  const [otherImages, setOtherImages] = useState(spot.otherImages);
   const [errors, setErrors] = useState({});
-
-  const additionalImgArr = [image1, image2, image3, image4];
-  const filteredImgArr = additionalImgArr.filter((img) => img.length > 0);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -92,21 +62,11 @@ const CreateNewSpot = () => {
         name,
         price,
         previewImage,
-        image1,
-        image2,
-        image3,
-        image4,
+        otherImages,
       };
-      dispatch(createSpot(newSpot)).then((createdSpot) => {
-        console.log("CREATE A SPOT", createdSpot, previewImage);
-        dispatch(createPreviewImage(createdSpot.id, previewImage));
-        filteredImgArr.forEach((image) => {
-          dispatch(createAdditionalImage(createdSpot.id, image));
-        });
-        // dispatch(createAdditionalImage(createdSpot.id, image1));
-        // dispatch(createAdditionalImage(createdSpot.id, image2));
-        history.push(`/api/spots/${createdSpot.id}`);
-      });
+      dispatch(updateSpot(spotId, newSpot)).then(
+        history.push(`/api/spots/${spot.id}`)
+      );
 
       //reset form inputs and errors
       setCountry("");
@@ -119,10 +79,7 @@ const CreateNewSpot = () => {
       setName("");
       setPrice("");
       setPreviewImage("");
-      setImage1("");
-      setImage2("");
-      setImage3("");
-      setImage4("");
+      setOtherImages("");
       setErrors({});
     }
   };
@@ -151,7 +108,7 @@ const CreateNewSpot = () => {
 
   return (
     <div className="create-spot-form-div">
-      <h2 className="create-spot-form-header">Create New Spot</h2>
+      <h2 className="create-spot-form-header">Update your Spot</h2>
       <form className="create-spot-form" onSubmit={handleSubmit}>
         <h3>Where's your place located?</h3>
         <p>
@@ -254,37 +211,37 @@ const CreateNewSpot = () => {
         <input
           type="text"
           placeholder="Image URL"
-          value={image1}
-          onChange={(e) => setImage1(e.target.value)}
+          value={otherImages}
+          onChange={(e) => setOtherImages(e.target.value)}
         />
         <input
           type="text"
           placeholder="Image URL"
-          value={image2}
-          onChange={(e) => setImage2(e.target.value)}
+          value={otherImages}
+          onChange={(e) => setOtherImages(e.target.value)}
         />
         <input
           type="text"
           placeholder="Image URL"
-          value={image3}
-          onChange={(e) => setImage3(e.target.value)}
+          value={otherImages}
+          onChange={(e) => setOtherImages(e.target.value)}
         />
         <input
           type="text"
           placeholder="Image URL"
-          value={image4}
-          onChange={(e) => setImage4(e.target.value)}
+          value={otherImages}
+          onChange={(e) => setOtherImages(e.target.value)}
         />
         <button
           className="create-spot-form-button"
           type="submit"
           disabled={Object.keys(errors).length ? true : false}
         >
-          Create Spot
+          Update your Spot
         </button>
       </form>
     </div>
   );
 };
 
-export default CreateNewSpot;
+export default UpdateSpot;

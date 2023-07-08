@@ -51,6 +51,48 @@ module.exports = {
           url: "https://upload.wikimedia.org/wikipedia/commons/2/26/Monterey_Bay_Aquarium_exterior_August_2016.jpg",
           preview: true,
         },
+        {
+          imageableId: 4,
+          imageableType: "Spot",
+          url: "https://verbenasimpleliving.files.wordpress.com/2010/09/h3.jpg",
+          preview: true,
+        },
+        {
+          imageableId: 4,
+          imageableType: "Spot",
+          url: "https://www.priceypads.com/wp-content/uploads/2020/09/Untitled-1.jpg",
+          preview: false,
+        },
+        {
+          imageableId: 4,
+          imageableType: "Spot",
+          url: "https://www.atticmag.com/wp-content/uploads/2010/10/kit-wht-pracmagic1-435.jpg",
+          preview: false,
+        },
+        {
+          imageableId: 4,
+          imageableType: "Spot",
+          url: "https://i0.wp.com/themoderndigest.com/wp-content/uploads/2020/10/Screenshot-2020-10-21-at-4.42.36-PM.png?resize=1024%2C417&ssl=1",
+          preview: false,
+        },
+        {
+          imageableId: 4,
+          imageableType: "Spot",
+          url: "https://2.bp.blogspot.com/-UloqgGy8GLg/Tnz21vCINSI/AAAAAAAAIyI/r9k4O7Kpa6M/s1600/kitchentable2.jpg",
+          preview: false,
+        },
+        {
+          imageableId: 5,
+          imageableType: "Spot",
+          url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5wIrrOJIf0RRSH3kjRzx4I7vkIWGk-jc97w&usqp=CAU",
+          preview: true,
+        },
+        {
+          imageableId: 5,
+          imageableType: "Spot",
+          url: "https://44.media.tumblr.com/48d209bb715aee5100237cfb13439d21/tumblr_pbw85uhXoY1qmob6ro1_400.gif",
+          preview: false,
+        },
       ],
       {}
     );
