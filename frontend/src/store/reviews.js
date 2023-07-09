@@ -56,10 +56,10 @@ const ADD_REVIEW = "reviews/ADD_REVIEW";
 //-----------------------------------------------------------------------
 
 //action creators
-const loadReviews = (spotId) => {
+const loadReviews = (reviews) => {
   return {
     type: LOAD_REVIEWS,
-    payload: spotId,
+    payload: reviews,
   };
 };
 
@@ -82,8 +82,11 @@ const addReview = (spotId, data) => {
 export const getReviews = (spotId) => async (dispatch) => {
   const res = await csrfFetch(`/api/spots/${spotId}/reviews`);
 
-  const data = await res.json();
-  dispatch(loadReviews(data));
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(loadReviews(data));
+    return data;
+  }
   return res;
 };
 
@@ -93,8 +96,11 @@ export const createReview = (spotId, data) => async (dispatch) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  const review = await res.json();
-  dispatch(addReview(spotId, review));
+  if (res.ok) {
+    const review = await res.json();
+    dispatch(addReview(spotId, review));
+    return review;
+  }
   return res;
 };
 
@@ -105,21 +111,7 @@ const reviewsReducer = (state = initialState, action) => {
   let newState = { ...state };
   switch (action.type) {
     case LOAD_REVIEWS:
-      //   action.payload.map((review) => {
-      //     return (newState = {
-      //       ...newState,
-      //       [review.id]: review,
-      //     });
-      //   });
-      //   return newState;
-      newState = {
-        ...newState,
-        ...action.payload.reduce((acc, review) => {
-          acc[review.id] = review;
-          return acc;
-        }, {}),
-      };
-      return newState;
+      return { ...action.payload };
     case ADD_REVIEW:
       newState = { [action.payload.id]: action.payload, ...newState };
       const sortedReviews = Object.values(newState).sort(

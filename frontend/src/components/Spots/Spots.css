@@ -46,6 +46,7 @@
   width: 25vw;
   object-fit: cover;
   object-position: center;
+  padding: 2px;
 }
 
 /* .landing-page-spot-text {
@@ -97,27 +98,56 @@
   grid-area: addtlImg4;
 }
 
-.spot-detail-info-box {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: row wrap;
+.spot-detail-info-box-container {
   border: 0.5px solid black;
   width: 250px;
   border-radius: 10px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
 }
 
-.spot-detail-info-item {
+.spot-detail-info-box-ul {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "info-price     info-rating    info-rating"
+    "info-button  info-button  info-button";
+  width: 100%;
+  list-style-type: none;
+  grid-gap: 10px;
+  margin: 0px;
+  padding: 15px;
+}
+
+.info-box-price {
+  grid-area: info-price;
   list-style-type: none;
 }
 
-.info-box-button {
+.info-ratings-and-reviews {
+  grid-area: info-rating;
+  justify-self: end;
+  list-style-type: none;
+}
+
+.info-reserve-button {
+  grid-area: info-button;
+
   background-color: #ec3355;
   border: none;
   border-radius: 10px;
   color: white;
   width: 100%;
   box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.4);
+  list-style-type: none;
+}
+.info-box-button {
+  grid-area: info-button;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .info-box-button:hover {

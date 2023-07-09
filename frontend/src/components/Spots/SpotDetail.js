@@ -20,16 +20,18 @@ state the price for the spot followed by the label "night", and have a "Reserve"
 ✓-When the "Reserve" button on the spot's detail page is clicked, it should open an 
 alert with the text "Feature coming soon".
 */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getSpotDetails } from "../../store/singleSpot";
-import { getReviews } from "../../store/reviews";
+import { getReviews, createReview } from "../../store/reviews";
+import OpenModalButton from "../OpenModalButton";
+import PostReviewModal from "../PostReviewModal";
 
 const SpotDetail = () => {
   const dispatch = useDispatch();
   const { spotId } = useParams();
-  // const spot = useSelector((state) => state.allSpots[+spotId]);
+  const [newReview, setNewReview] = useState("");
   const spot = useSelector((state) => state.singleSpot[spotId]);
   const reviews = useSelector((state) => state.reviews);
   const sessionUser = useSelector((state) => state.session.user);
@@ -43,10 +45,6 @@ const SpotDetail = () => {
     dispatch(getSpotDetails(spotId));
     dispatch(getReviews(spotId));
   }, [dispatch, spotId]);
-
-  // if (!reviews) {
-  //   return;
-  // }
 
   if (!spot) return;
 
@@ -80,15 +78,23 @@ const SpotDetail = () => {
         Hosted by: {spot.Owner?.firstName} {spot.Owner?.lastName}
       </p>
       <p>{spot.description}</p>
-      <div className="spot-detail-info-box">
-        <ul>
-          <li className="spot-detail-info-item">${spot.price} / night</li>
-          <li className="spot-detail-info-item">
+      <div className="spot-detail-info-box-container">
+        <ul className="spot-detail-info-box-ul">
+          <li className="info-box-price">${spot.price}/night</li>
+          <li className="info-ratings-and-reviews">
             <i className="fa-solid fa-star"></i>
             {spot.avgRating ? spot.avgRating : "New!"}
+            {spot.numReviews > 0
+              ? spot.numReviews !== 1
+                ? ` · ${spot.numReviews} reviews`
+                : ` · ${spot.numReviews} review`
+              : null}
           </li>
-          <li className="spot-detail-info-item">
-            <button className="info-box-button" onClick={handleReserve}>
+          <li className="info-box-button">
+            <button
+              className="info-box-button info-reserve-button"
+              onClick={handleReserve}
+            >
               Reserve
             </button>
           </li>
@@ -104,6 +110,22 @@ const SpotDetail = () => {
               ? ` · ${spot.numReviews} reviews`
               : ` · ${spot.numReviews} review`
             : null}
+          {sessionUser ? (
+            sessionUser.id !== spot.ownerId ? (
+              !Object.values(reviews).some(
+                (review) => review.userId === sessionUser.id
+              ) ? (
+                <div>
+                  <OpenModalButton
+                    className="post-review-button"
+                    buttonText="Post Your Review"
+                    modalComponent={<PostReviewModal spot={spot} />}
+                  />
+                </div>
+              ) : null
+            ) : null
+          ) : null}
+
           {/*If logged in and not the owner of the spot, and if there
             are no reviews, display 'Be the first to post a review!' */}
           {sessionUser ? (
