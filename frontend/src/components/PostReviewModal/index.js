@@ -48,18 +48,22 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 // import { useModal } from "../../context/Modal";
 import "./PostReviewModal.css";
+import { createReview } from "../../store/reviews";
 
 const PostReviewModal = ({ spot }) => {
   const [review, setReview] = useState("");
   const dispatch = useDispatch();
+
+  const submitReview = (e) => {
+    e.preventDefault();
+
+    dispatch(createReview(spot.id, review));
+  };
   return (
     <div className="post-review-modal-container">
       <h1>How was your stay?</h1>
       <form className="post-review-modal-form">
-        <mat-form-field
-          style={{ width: "400px" }}
-          className="post-review-textarea-field"
-        >
+        <mat-form-field className="post-review-textarea-field">
           <textarea
             matInput
             rows="5"
@@ -71,13 +75,6 @@ const PostReviewModal = ({ spot }) => {
             onChange={(e) => setReview(e.target.value)}
           />
         </mat-form-field>
-        {/* <textarea
-          type="text"
-          className="post-review-textarea"
-          placeholder="Leave your review here..."
-          value={review}
-          onChange={(e) => setReview(e.target.value)}
-        /> */}
 
         <div className="rating-input">
           <div className="filled-rating">
@@ -95,8 +92,9 @@ const PostReviewModal = ({ spot }) => {
           <div className="empty-rating">
             <i className="fa-solid fa-star"></i>
           </div>
+          <span> Stars</span>
         </div>
-        <button>Submit Your Review</button>
+        <button onClick={submitReview}>Submit Your Review</button>
       </form>
     </div>
   );

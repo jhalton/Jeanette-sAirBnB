@@ -6,19 +6,24 @@
 }
 
 .post-review-modal-form {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-content: center;
+  /* display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 10px; */
 }
 
 .post-review-textarea-field {
-  display: flex;
-  align-self: center;
+  width: 400px;
+
+  justify-self: center;
 }
 
 .rating-input {
   display: inline-flex;
+  justify-self: center;
 }
 
 .empty-rating {
