@@ -53,7 +53,10 @@ const SpotDetail = () => {
 
   return (
     <div className="spot-detail-container">
-      <h1>{spot?.name}</h1>
+      <h1 className="spot-detail-title">{spot?.name}</h1>
+      <span>
+        {spot?.city}, {spot?.state}, {spot?.country}
+      </span>
       <div className="spot-detail-images">
         <img
           className={`spot-detail-preview-image grid-item-0`}
@@ -71,34 +74,33 @@ const SpotDetail = () => {
           );
         })}
       </div>
-      <p>
-        {spot?.address}, {spot?.city}, {spot?.state}
-      </p>
-      <p>
-        Hosted by: {spot.Owner?.firstName} {spot.Owner?.lastName}
-      </p>
-      <p>{spot.description}</p>
-      <div className="spot-detail-info-box-container">
-        <ul className="spot-detail-info-box-ul">
-          <li className="info-box-price">${spot.price}/night</li>
-          <li className="info-ratings-and-reviews">
-            <i className="fa-solid fa-star"></i>
-            {spot.avgRating ? spot.avgRating : "New!"}
-            {spot.numReviews > 0
-              ? spot.numReviews !== 1
-                ? ` · ${spot.numReviews} reviews`
-                : ` · ${spot.numReviews} review`
-              : null}
-          </li>
-          <li className="info-box-button">
-            <button
-              className="info-box-button info-reserve-button"
-              onClick={handleReserve}
-            >
-              Reserve
-            </button>
-          </li>
-        </ul>
+      <div className="spot-detail-text">
+        <h2 className="spot-detail-host">
+          Hosted by {spot.Owner?.firstName} {spot.Owner?.lastName}
+        </h2>
+        <span className="spot-detail-description">{spot.description}</span>
+        <div className="spot-detail-info-box-container">
+          <ul className="spot-detail-info-box-ul">
+            <li className="info-box-price">${spot.price}/night</li>
+            <li className="info-ratings-and-reviews">
+              <i className="fa-solid fa-star"></i>
+              {spot.avgRating ? spot.avgRating : "New!"}
+              {spot.numReviews > 0
+                ? spot.numReviews !== 1
+                  ? ` · ${spot.numReviews} reviews`
+                  : ` · ${spot.numReviews} review`
+                : null}
+            </li>
+            <li className="info-box-button">
+              <button
+                className="info-box-button info-reserve-button"
+                onClick={handleReserve}
+              >
+                Reserve
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
       <br />
       <div className="reviews-div">

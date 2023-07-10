@@ -1,0 +1,30 @@
+.post-review-modal-container {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.post-review-modal-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.post-review-textarea-field {
+  display: flex;
+  align-self: center;
+}
+
+.rating-input {
+  display: inline-flex;
+}
+
+.empty-rating {
+  color: #b2b2b3;
+}
+
+.filled-rating {
+  color: #ec3355;
+}

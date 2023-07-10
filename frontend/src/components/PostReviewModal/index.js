@@ -29,7 +29,7 @@ Acceptance Criteria
     your review here...".
 There should be a star rating input ranging from 1 to 5 stars 
     followed by a label of "Stars".
-The submit button should have the text of "Submit Your Review".
+✓The submit button should have the text of "Submit Your Review".
 The "Submit Your Review" button is disabled when there are fewer 
     than 10 characters in the comment text area and when the star 
     rating input has no stars selected.
@@ -46,23 +46,57 @@ Closing the model resets any errors and clears all data entered.
 
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useModal } from "../../context/Modal";
+// import { useModal } from "../../context/Modal";
 import "./PostReviewModal.css";
 
 const PostReviewModal = ({ spot }) => {
   const [review, setReview] = useState("");
   const dispatch = useDispatch();
   return (
-    <div>
+    <div className="post-review-modal-container">
       <h1>How was your stay?</h1>
-      <form>
-        <textarea
+      <form className="post-review-modal-form">
+        <mat-form-field
+          style={{ width: "400px" }}
+          className="post-review-textarea-field"
+        >
+          <textarea
+            matInput
+            rows="5"
+            cols="40"
+            type="text"
+            className="post-review-textarea"
+            placeholder="Leave your review here..."
+            value={review}
+            onChange={(e) => setReview(e.target.value)}
+          />
+        </mat-form-field>
+        {/* <textarea
           type="text"
-          className="post-review-text-area"
+          className="post-review-textarea"
           placeholder="Leave your review here..."
           value={review}
           onChange={(e) => setReview(e.target.value)}
-        />
+        /> */}
+
+        <div className="rating-input">
+          <div className="filled-rating">
+            <i className="fa-solid fa-star"></i>
+          </div>
+          <div className="filled-rating">
+            <i className="fa-solid fa-star"></i>
+          </div>
+          <div className="filled-rating">
+            <i className="fa-solid fa-star"></i>
+          </div>
+          <div className="empty-rating">
+            <i className="fa-solid fa-star"></i>
+          </div>
+          <div className="empty-rating">
+            <i className="fa-solid fa-star"></i>
+          </div>
+        </div>
+        <button>Submit Your Review</button>
       </form>
     </div>
   );
