@@ -1,7 +1,6 @@
 {
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "react-tooltip": "^5.16.1"
+    "bcryptjs": "^2.4.3"
   },
   "name": "jeanette-sairbnb",
   "description": "## Database Schema Design",
