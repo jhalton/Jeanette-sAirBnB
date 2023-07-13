@@ -29,9 +29,8 @@ const DropDownMenu = ({ isLoaded }) => {
 
   const loginDemo = (e) => {
     e.preventDefault();
-    const demo = "Demo";
-    const password = "password";
-    dispatch(login(demo, password));
+
+    dispatch(login({ credential: "demo@demo.io", password: "password" }));
   };
 
   let sessionLinks;
