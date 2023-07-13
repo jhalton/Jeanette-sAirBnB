@@ -38,24 +38,22 @@ const LandingPage = () => {
     <div className="landing-page-div">
       <ul className="landing-page-ul">
         {spots.map((spot) => (
-          <li key={spot.id}>
+          <li className="landing-page-li" key={spot.id}>
             <img
-              className="spot-image"
+              className="landing-page-spot-image spot-image"
               src={spot.previewImage || defaultPreview}
               alt={spot.name}
               onClick={() => history.push(`/api/spots/${spot.id}`)}
             />
 
-            <div className="landing-page-spot-text">
-              <p className="landing-page-location">
-                {spot.city}, {spot.state}
-              </p>
-              <p className="landing-page-price">${spot.price} / night</p>
-              <p className="landing-page-rating">
-                <i className="fa-solid fa-star"></i>
-                {Number(spot.avgRating) ? spot.avgRating : "New!"}
-              </p>
-            </div>
+            <span className="landing-page-location">
+              {spot.city}, {spot.state}
+            </span>
+            <span className="landing-page-rating">
+              <i className="fa-solid fa-star"></i>
+              {Number(spot.avgRating) ? spot.avgRating : "New!"}
+            </span>
+            <span className="landing-page-price">${spot.price} / night</span>
           </li>
         ))}
       </ul>

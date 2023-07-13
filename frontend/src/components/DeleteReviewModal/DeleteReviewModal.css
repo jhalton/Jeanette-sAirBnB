@@ -1,0 +1,31 @@
+.delete-review-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-areas:
+    "title title"
+    "prompt prompt"
+    "delete keep";
+  justify-items: center;
+  padding: 10px;
+}
+
+.delete-review-title {
+  grid-area: title;
+}
+
+.delete-review-prompt {
+  grid-area: prompt;
+}
+
+.delete-review-button {
+  grid-area: delete;
+  background-color: #ec3355;
+  color: white;
+}
+
+.keep-review-button {
+  grid-area: keep;
+  background-color: #535355;
+  color: white;
+}

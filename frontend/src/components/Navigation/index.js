@@ -1,11 +1,13 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-
+import { useSelector } from "react-redux";
 import "./Navigation.css";
 import DropDownMenu from "./DropDownMenu";
+
 // import CreateNewSpot from "../Spots/CreateNewSpot";
 
 function Navigation({ isLoaded }) {
+  const sessionUser = useSelector((state) => state.session.user);
   return (
     <div className="nav-link-div">
       <ul className="nav-link-ul">
@@ -18,9 +20,11 @@ function Navigation({ isLoaded }) {
         <li>
           <div className="nav-right-side">
             <div className="new-spot-navlink-container">
-              <NavLink to="/api/spots" className="create-new-spot-link">
-                Create a New Spot
-              </NavLink>
+              {sessionUser ? (
+                <NavLink to="/api/spots" className="create-new-spot-link">
+                  Create a New Spot
+                </NavLink>
+              ) : null}
             </div>
             <DropDownMenu />
           </div>

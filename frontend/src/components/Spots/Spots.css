@@ -1,40 +1,49 @@
 .landing-page-div {
-  display: grid;
-
-  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  max-width: 1000px;
 }
 
 .landing-page-ul {
   display: grid;
   list-style-type: none;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
+  grid-gap: 10px;
+  max-width: 1000px;
+  height: 100%;
 }
 
-.landing-page-ul > li {
+.landing-page-li {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 5fr 1fr 1fr;
   grid-template-areas:
     "image   image   image   image"
     "image   image   image   image"
     "image   image   image   image"
     "image   image   image   image"
-    "location  .       .     rating"
-    "price      .       .        .  ";
+    "image   image   image   image"
+    "location location rating  rating"
+    "price      price       .        .  ";
 }
 
-.spot-image {
+.landing-page-spot-image {
   grid-area: image;
 }
 
 .landing-page-location {
   grid-area: location;
+  justify-self: start;
 }
 
 .landing-page-rating {
   grid-area: rating;
+  justify-self: end;
 }
 
 .landing-page-price {
   grid-area: price;
+  justify-self: start;
 }
 
 .spot-image:hover {
@@ -47,15 +56,20 @@
   object-fit: cover;
   object-position: center;
   padding: 2px;
+  height: 200px;
 }
 
-/* .landing-page-spot-text {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-} */
-
 /* SpotDetail */
+.spot-detail-container {
+  display: grid;
+  justify-content: center;
+  max-width: 1000px;
+}
+
+.spot-detail-title {
+  margin: 0;
+}
+
 .spot-detail-images {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -63,11 +77,13 @@
   grid-template-areas:
     "previewImg previewImg addtlImg1 addtlImg2"
     "previewImg previewImg addtlImg3 addtlImg4";
+  grid-gap: 5px;
 }
 
 .spot-detail-preview-image {
   border-radius: 10px;
-  width: 50vw;
+  width: 100%;
+  height: 373.125px;
   object-fit: cover;
   object-position: center;
   padding: 2px;
@@ -75,7 +91,8 @@
 
 .spot-detail-additional-image {
   border-radius: 10px;
-  width: 25vw;
+  width: 100%;
+  height: 184.688px;
   object-fit: cover;
   object-position: center;
   padding: 2px;
@@ -98,7 +115,29 @@
   grid-area: addtlImg4;
 }
 
+.spot-detail-text {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Adjust the column proportions as needed */
+  grid-template-rows: auto; /* Remove unnecessary row definitions */
+  grid-template-areas:
+    "detail-host detail-info"
+    "detail-description detail-info"
+    "detail-description detail-info"
+    "detail-description detail-info"
+    "detail-description .";
+}
+.spot-detail-host {
+  margin: 0;
+  grid-area: detail-host;
+}
+
+.spot-detail-description {
+  grid-area: detail-description;
+}
+
 .spot-detail-info-box-container {
+  grid-area: detail-info;
+  justify-self: end;
   border: 0.5px solid black;
   width: 250px;
   border-radius: 10px;
