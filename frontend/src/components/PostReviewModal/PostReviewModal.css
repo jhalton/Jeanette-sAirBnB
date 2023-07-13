@@ -1,23 +1,22 @@
 .post-review-modal-container {
   padding: 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  /* display: grid;
+  justify-items: center; */
 }
 
 .post-review-modal-form {
   display: grid;
+  grid-gap: 10px;
   grid-template-columns: 1fr;
-  justify-content: center;
+  justify-items: center;
   /* display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px; */
 }
 
-.post-review-textarea-field {
-  width: 400px;
-
+.post-review-textarea {
+  width: 100%;
   justify-self: center;
 }
 
@@ -26,10 +25,10 @@
   justify-self: center;
 }
 
-.empty-rating {
+.empty {
   color: #b2b2b3;
 }
 
-.filled-rating {
+.filled {
   color: #ec3355;
 }

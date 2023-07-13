@@ -20,7 +20,7 @@ When viewing the home page, each spot tile in the tile list must
     average star rating should have a star icon followed by the 
     average star rating of all the reviews for that spot as a 
     decimal (e.g. 3.0 or 4.89, NOT 3 or 5).
-When viewing a spot's detail page, the review summary info should
+✓When viewing a spot's detail page, the review summary info should
     be in two different places, the callout information box and the 
     heading before the list of reviews. The review summary info 
     should show the average star rating of all the reviews for that 
@@ -38,7 +38,7 @@ The average star rating in the spot's detail page should have a
 ✓ If the review count is zero (there are no reviews yet for this spot), it should 
     not show the centered dot or the review count (only the average
     star rating should be displayed)
-When viewing the spot's detail page, show a list of the reviews for the spot below
+✓ When viewing the spot's detail page, show a list of the reviews for the spot below
     the spot's information with the newest reviews at the top, and 
     the oldest reviews at the bottom.
 ✓ Each review in the review list must include: The reviewer's first name, the month   
@@ -52,7 +52,7 @@ import { csrfFetch } from "./csrf";
 //----------------------------------------------------------------------
 const LOAD_REVIEWS = "reviews/LOAD_REVIEWS";
 const ADD_REVIEW = "reviews/ADD_REVIEW";
-// const REMOVE_REVIEW = "reviews/REMOVE_REVIEW";
+const REMOVE_REVIEW = "reviews/REMOVE_REVIEW";
 //-----------------------------------------------------------------------
 
 //action creators
@@ -63,22 +63,23 @@ const loadReviews = (reviews) => {
   };
 };
 
-const addReview = (spotId, data) => {
+const addReview = (payload) => {
   return {
     type: ADD_REVIEW,
-    payload: { spotId, data },
+    payload,
   };
 };
 
-// const removeReview = (id) => {
-//   return {
-//     type: REMOVE_REVIEW,
-//     payload: id,
-//   };
-// };
+const removeReview = (id) => {
+  return {
+    type: REMOVE_REVIEW,
+    payload: id,
+  };
+};
 //---------------------------------------------------------------
 //thunk action creators
 
+//get reviews for a spot
 export const getReviews = (spotId) => async (dispatch) => {
   const res = await csrfFetch(`/api/spots/${spotId}/reviews`);
 
@@ -90,16 +91,32 @@ export const getReviews = (spotId) => async (dispatch) => {
   return res;
 };
 
-export const createReview = (spotId, data) => async (dispatch) => {
+//create a review for a spot
+export const createReview = (spotId, review, stars) => async (dispatch) => {
   const res = await csrfFetch(`/api/spots/${spotId}/reviews`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify({ review, stars }),
   });
   if (res.ok) {
-    const review = await res.json();
-    dispatch(addReview(spotId, review));
-    return review;
+    const data = await res.json();
+    // dispatch(addReview(data));
+    dispatch(loadReviews(spotId));
+    return data;
+  }
+  return res;
+};
+
+//delete a review from a spot
+export const deleteReview = (reviewId) => async (dispatch) => {
+  const res = await csrfFetch(`/api/reviews/${reviewId}`, {
+    method: "DELETE",
+  });
+
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(removeReview(reviewId));
+    return data;
   }
   return res;
 };
@@ -113,15 +130,11 @@ const reviewsReducer = (state = initialState, action) => {
     case LOAD_REVIEWS:
       return { ...action.payload };
     case ADD_REVIEW:
-      newState = { [action.payload.id]: action.payload, ...newState };
-      const sortedReviews = Object.values(newState).sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
-      const sortedState = sortedReviews.reduce((acc, review) => {
-        acc[review.id] = review;
-        return acc;
-      }, {});
-      return sortedState;
+      newState[action.payload.id] = action.payload;
+      return newState;
+    case REMOVE_REVIEW:
+      delete newState[action.payload];
+      return newState;
     default:
       return state;
   }

@@ -61,7 +61,7 @@ const ManageSpots = () => {
               alt={spot.name}
               onClick={() => history.push(`/api/spots/${spot.id}`)}
             />
-
+            {console.log("MANAGE SPOT", spot)}
             <div className="manage-spots-text">
               <p className="manage-spots-location">
                 {spot.city}, {spot.state}

@@ -20,21 +20,25 @@ state the price for the spot followed by the label "night", and have a "Reserve"
 ✓-When the "Reserve" button on the spot's detail page is clicked, it should open an 
 alert with the text "Feature coming soon".
 */
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getSpotDetails } from "../../store/singleSpot";
-import { getReviews, createReview } from "../../store/reviews";
+import { getReviews } from "../../store/reviews";
 import OpenModalButton from "../OpenModalButton";
 import PostReviewModal from "../PostReviewModal";
+import DeleteReviewModal from "../DeleteReviewModal";
 
 const SpotDetail = () => {
   const dispatch = useDispatch();
   const { spotId } = useParams();
-  const [newReview, setNewReview] = useState("");
   const spot = useSelector((state) => state.singleSpot[spotId]);
   const reviews = useSelector((state) => state.reviews);
   const sessionUser = useSelector((state) => state.session.user);
+
+  const reversedReviewsArr = Object.values(reviews).reverse();
+  console.log("REVIEWS STATE", reviews);
+  console.log("REVERSED REVIEWS ARR", reversedReviewsArr);
 
   const handleReserve = (e) => {
     e.preventDefault();
@@ -46,7 +50,7 @@ const SpotDetail = () => {
     dispatch(getReviews(spotId));
   }, [dispatch, spotId]);
 
-  if (!spot) return;
+  if (!spot) return <div>Loading...</div>;
 
   const spotPreviewImage = spot.SpotImages?.find((img) => img.preview === true);
   const spotImages = spot.SpotImages?.filter((img) => img.preview === false);
@@ -139,19 +143,29 @@ const SpotDetail = () => {
           ) : null}
         </div>
         <ul className="reviews-ul">
-          {Object.values(reviews)?.map((review) => {
-            const createdAtDate = new Date(review.createdAt);
-            const month = createdAtDate.toLocaleString("en-US", {
+          {reversedReviewsArr.map((review) => {
+            const createdAtDate = new Date(review?.createdAt);
+            const month = createdAtDate?.toLocaleString("en-US", {
               month: "long",
             });
-            const year = createdAtDate.getFullYear();
+            const year = createdAtDate?.getFullYear();
             const formattedDate = `${month} ${year}`;
 
             return (
-              <li key={review.id}>
-                <p>{review.User.firstName}</p>
+              <li key={review?.id}>
+                <p>{review.User?.firstName}</p>
                 <p>{formattedDate}</p>
-                <p>{review.review}</p>
+                <p>{review?.review}</p>
+
+                {sessionUser ? (
+                  sessionUser.id === review.User.id ? (
+                    <OpenModalButton
+                      className="delete-review-button"
+                      buttonText="delete"
+                      modalComponent={<DeleteReviewModal review={review} />}
+                    />
+                  ) : null
+                ) : null}
               </li>
             );
           })}

@@ -28,8 +28,11 @@ export const removeSpot = (id) => {
 //get spots of current user
 export const getCurrentUserSpots = () => async (dispatch) => {
   const res = await csrfFetch("/api/users/me/spots");
-  const data = await res.json();
-  dispatch(loadUserSpots(data));
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(loadUserSpots(data));
+    return data;
+  }
   return res;
 };
 //----------------------------------------------------------------
@@ -54,11 +57,13 @@ export const createSpot = (data) => async (dispatch) => {
     }),
   });
 
-  const newSpot = await res.json();
-  dispatch(addSpot(newSpot));
-  console.log("THUNK CREATE NEWSPOT ID", newSpot.id);
+  if (res.ok) {
+    const newSpot = await res.json();
+    dispatch(addSpot(newSpot));
 
-  return newSpot;
+    return newSpot;
+  }
+  return res;
 };
 //----------------------------------------------------------------
 //remove a spot
@@ -66,9 +71,11 @@ export const deleteSpot = (id) => async (dispatch) => {
   const res = await csrfFetch(`/api/spots/${id}`, {
     method: "DELETE",
   });
-  const data = await res.json();
-  console.log("THUNK DELETE SPOT", data);
-  dispatch(removeSpot(data));
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(removeSpot(data));
+    return data;
+  }
   return res;
 };
 //----------------------------------------------------------------
@@ -105,10 +112,12 @@ export const updateSpot = (id, data) => async (dispatch) => {
     }),
   });
 
-  const newSpot = await res.json();
-
-  dispatch(addSpot(newSpot.data));
-  return newSpot;
+  if (res.ok) {
+    const newSpot = await res.json();
+    dispatch(addSpot(newSpot));
+    return newSpot;
+  }
+  return res;
 };
 
 //----------------------------------------------------------------

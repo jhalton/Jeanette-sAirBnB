@@ -32,19 +32,19 @@ optional for MVP) [DO I HAVE TO INCLUDE LABELS?]
 higher in search results.", and a number input with a placeholder of "Price per
  night (USD)".
 ✓✓ -The fifth section should include: a heading of "Liven up your spot with photos",
- a caption of "Submit a link to at least one photo to publish your spot.", and 
- five text inputs where the first input has a placeholder of "Preview Image URL"
-  and the rest of the inputs have a placeholder of "Image URL".
+    a caption of "Submit a link to at least one photo to publish your spot.", and 
+    five text inputs where the first input has a placeholder of "Preview Image URL"
+     and the rest of the inputs have a placeholder of "Image URL".
 ✓✓-The submit button should have the text of "Create Spot".
 -Validation messages must show at the top of the form or under each field with an
- error if the user tries to submit an incomplete form. Examples: a * Required 
- Field: " is required" (e.g. "Price per night is required", etc.), a Description
-  Min Length: "Description needs 30 or more characters". Out of the five image 
-  URL inputs, only the first Image URL input (the Preview Image URL) is required.
--When a spot is successfully created, the user should automatically be navigated 
-to the new spot's detail page.
+     error if the user tries to submit an incomplete form. Examples: a * Required 
+     Field: " is required" (e.g. "Price per night is required", etc.), a Description
+       Min Length: "Description needs 30 or more characters". Out of the five image 
+       URL inputs, only the first Image URL input (the Preview Image URL) is required.
+✓-When a spot is successfully created, the user should automatically be navigated 
+    to the new spot's detail page.
 -Navigating away and back to the create spot form form resets any errors and 
-clears all data entered, so it displays in the default state (no errors, *empty 
+    clears all data entered, so it displays in the default state (no errors, *empty 
     inputs, button disabled).
 */
 import { useDispatch } from "react-redux";
@@ -98,13 +98,10 @@ const CreateNewSpot = () => {
         image4,
       };
       dispatch(createSpot(newSpot)).then((createdSpot) => {
-        console.log("CREATE A SPOT", createdSpot, previewImage);
         dispatch(createPreviewImage(createdSpot.id, previewImage));
         filteredImgArr.forEach((image) => {
           dispatch(createAdditionalImage(createdSpot.id, image));
         });
-        // dispatch(createAdditionalImage(createdSpot.id, image1));
-        // dispatch(createAdditionalImage(createdSpot.id, image2));
         history.push(`/api/spots/${createdSpot.id}`);
       });
 

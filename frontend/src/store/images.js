@@ -20,7 +20,6 @@ export const createPreviewImage = (spotId, url) => async (dispatch) => {
     }),
   });
   const imageData = await res.json();
-  console.log("CHECKING THUNK PREVIEW IMAGE DATA", imageData);
   if (res.ok) {
     dispatch(addImage(spotId, imageData));
     return imageData;
