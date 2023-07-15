@@ -27,9 +27,9 @@ const UpdateSpot = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { spotId } = useParams();
-  const spot = useSelector((state) => state.singleSpot[spotId]);
+  const spot = useSelector((state) => state.singleSpot[+spotId]);
 
-  console.log("LOOK HERE UPDATE SPOT.ID", spot);
+  console.log("LOOK HERE UPDATE SPOT", spot);
 
   const [country, setCountry] = useState(spot.country);
   const [address, setAddress] = useState(spot.address);
