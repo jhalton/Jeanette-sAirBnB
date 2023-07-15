@@ -12,9 +12,11 @@ function Navigation({ isLoaded }) {
     <div className="nav-link-div">
       <ul className="nav-link-ul">
         <li>
-          <NavLink exact to="/" className="nav-button">
-            <i className="fa-brands fa-airbnb"></i>
-          </NavLink>
+          <div className="nav-left-side">
+            <NavLink exact to="/" className="nav-button">
+              <i className="fa-brands fa-airbnb"></i>
+            </NavLink>
+          </div>
         </li>
 
         <li>
