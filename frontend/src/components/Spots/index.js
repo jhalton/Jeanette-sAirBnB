@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllSpots } from "../../store/spots";
 import "./Spots.css";
 import { useHistory } from "react-router-dom";
+import Tooltip from "../../Tooltip/Tooltip";
 
 const LandingPage = () => {
   const dispatch = useDispatch();
@@ -39,13 +40,15 @@ const LandingPage = () => {
       <ul className="landing-page-ul">
         {spots.map((spot) => (
           <li className="landing-page-li" key={spot.id}>
-            <img
-              className="landing-page-spot-image spot-image"
-              src={spot.previewImage || defaultPreview}
-              alt={spot.name}
-              onClick={() => history.push(`/api/spots/${spot.id}`)}
-            />
-
+            <Tooltip text={spot.name}>
+              <img
+                className="landing-page-spot-image spot-image"
+                // data-tooltip="test text" //when this works, change to {spot.name}
+                src={spot.previewImage || defaultPreview}
+                alt={spot.name}
+                onClick={() => history.push(`/api/spots/${spot.id}`)}
+              />
+            </Tooltip>
             <span className="landing-page-location">
               {spot.city}, {spot.state}
             </span>
@@ -57,6 +60,10 @@ const LandingPage = () => {
           </li>
         ))}
       </ul>
+
+      <span className="test-tooltip" data-tooltip="testing 123">
+        TEST TOOLTIP
+      </span>
     </div>
   );
 };

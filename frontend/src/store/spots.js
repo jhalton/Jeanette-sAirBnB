@@ -4,7 +4,7 @@ import { csrfFetch } from "./csrf";
 
 const LOAD_SPOTS = "spot/LOAD_SPOT";
 
-export const loadSpot = (payload = null) => {
+export const loadSpot = (payload) => {
   return {
     type: LOAD_SPOTS,
     payload,
@@ -15,8 +15,13 @@ export const loadSpot = (payload = null) => {
 //get all spots
 export const getAllSpots = () => async (dispatch) => {
   const res = await csrfFetch("/api/spots");
-  const data = await res.json();
-  dispatch(loadSpot(data));
+
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(loadSpot(data));
+    return data;
+  }
+
   return res;
 };
 

@@ -16,7 +16,7 @@ const OpenModalButton = ({
 
   return (
     <div>
-      <button className="nav-button" onClick={onClick}>
+      <button className="open-modal-button" onClick={onClick}>
         {buttonText}
       </button>
     </div>

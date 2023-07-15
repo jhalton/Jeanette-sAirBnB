@@ -73,7 +73,7 @@ export const deleteSpot = (id) => async (dispatch) => {
   });
   if (res.ok) {
     const data = await res.json();
-    dispatch(removeSpot(data));
+    dispatch(removeSpot(id));
     return data;
   }
   return res;
@@ -94,7 +94,6 @@ export const updateSpot = (id, data) => async (dispatch) => {
     previewImage,
   } = data;
 
-  console.log("UPDATE THUNK DATA", data);
   const res = await csrfFetch(`/api/spots/${id}/update`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

@@ -112,7 +112,11 @@ const SignupFormModal = () => {
         />
 
         {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
-        <button className="signup-button" type="submit" onClick={handleSubmit}>
+        <button
+          className="signup-button"
+          type="submit"
+          disabled={username.length < 4 || password.length < 6}
+        >
           Submit
         </button>
       </form>

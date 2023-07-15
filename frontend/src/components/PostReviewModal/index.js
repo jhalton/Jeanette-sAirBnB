@@ -58,16 +58,17 @@ const PostReviewModal = ({ spot }) => {
   const [errors, setErrors] = useState("");
   const { closeModal } = useModal();
 
-  const submitReview = (e) => {
+  const submitReview = async (e) => {
     e.preventDefault();
-    dispatch(createReview(spot?.id, review, rating));
+    await dispatch(createReview(spot?.id, review, rating));
 
     setReview("");
     setRating(0);
     setErrors("");
 
     closeModal();
-    dispatch(getSpotDetails(spot?.id)).then(dispatch(getReviews(spot?.id)));
+    await dispatch(getSpotDetails(spot?.id));
+    await dispatch(getReviews(spot?.id));
   };
   return (
     <div className="post-review-modal-container">
