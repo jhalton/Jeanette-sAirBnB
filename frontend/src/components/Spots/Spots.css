@@ -55,10 +55,79 @@
   width: 25vw;
   object-fit: cover;
   object-position: center;
+  position: relative;
   padding: 2px;
   height: 200px;
 }
+/* ---------------------------------------------------------------- */
+/* Tooltip
+.spot-image::before,
+.spot-image::after {
+  --scale: 0;
+  --tooltip-color: #333
+  --arrow-size: 10px;
+  
 
+  position: absolute;
+  top: -0.25rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(var(--translate-y, 0) scale(var(--scale)));
+  transition: 150ms transform;
+  transform-origin: bottom center;
+}
+
+.spot-image::before {
+--translate-y: calc(-100% - var(--arrow-size));
+
+  content: attr(data-tooltip);
+  color: white;
+  padding: 0.5rem;
+  border-radius: 0rem;
+  text-align: center;
+  width: max-content;
+  max-width: 100%;
+  background-color: var(--tooltip-color);
+}
+
+.spot-image:hover::before,
+.spot-image:hover::after {
+  --scale: 1;
+
+  cursor: pointer;
+}
+
+.spot-image::after {
+--translate-y: calc(-1 * var(--arrow-size));
+
+  content: "";
+  border: var(--arrow-size) solid transparent;
+  border-top-color: var(--tooltip-color);
+  transform-origin: top center;
+} */
+
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip {
+  visibility: hidden;
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(100%) translateY(100%);
+  background-color: #333;
+  color: white;
+  padding: 5px;
+  border-radius: 0.3rem;
+  z-index: 1;
+}
+
+.tooltip:hover {
+  visibility: visible;
+}
+
+/* ------------------------------------------------------------ */
 /* SpotDetail */
 .spot-detail-container {
   display: grid;
@@ -174,10 +243,18 @@
 .info-reserve-button {
   grid-area: info-button;
 
-  background-color: #ec3355;
-  border: none;
-  border-radius: 10px;
+  background: rgb(251, 63, 63);
+  background: radial-gradient(
+    circle,
+    rgba(251, 63, 63, 1) 0%,
+    rgba(252, 70, 107, 1) 100%
+  );
   color: white;
+
+  /* background-color: #ec3355; */
+  border: none;
+  /* border-radius: 10px; */
+  /* color: white; */
   width: 100%;
   box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.4);
   list-style-type: none;
@@ -240,32 +317,36 @@
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr;
   grid-template-areas:
-    "manage-location    .         .           manage-rating"
-    "manage-price        .         .              . "
+    "manage-location    manage-location       manage-rating       manage-rating"
+    "manage-price        manage-price        manage-price     manage-price "
     "update      delete      .              . ";
   overflow: auto;
 }
 
 .manage-spots-location {
   grid-area: manage-location;
+  justify-self: start;
 }
 
 .manage-spots-price {
   grid-area: manage-price;
+  justify-self: start;
 }
 
 .manage-spots-rating {
   grid-area: manage-rating;
+  justify-self: end;
 }
 
 .update-button {
   grid-area: update;
   background-color: #ec3355;
   border: none;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   color: white;
   width: 100%;
   box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.4);
+  justify-self: start;
 }
 
 .delete-button {
@@ -276,4 +357,5 @@
   color: white;
   width: 100%;
   box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.4);
+  justify-self: center;
 }
