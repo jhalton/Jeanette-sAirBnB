@@ -60,10 +60,6 @@ const LandingPage = () => {
           </li>
         ))}
       </ul>
-
-      <span className="test-tooltip" data-tooltip="testing 123">
-        TEST TOOLTIP
-      </span>
     </div>
   );
 };
