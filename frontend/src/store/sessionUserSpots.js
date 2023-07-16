@@ -3,6 +3,7 @@ import { csrfFetch } from "./csrf";
 const LOAD_USER_SPOTS = "sessionUserSpots/LOAD_USER_SPOTS";
 const ADD_SPOT = "sessionUserSpots/ADD_SPOT";
 const REMOVE_SPOT = "sessionUserSpots/REMOVE_SPOT";
+const RESET_USER_SPOTS = "sessionUserSpots/RESET_USER_SPOTS";
 
 export const loadUserSpots = (payload = null) => {
   return {
@@ -24,6 +25,12 @@ export const removeSpot = (id) => {
     payload: id,
   };
 };
+
+export const resetUserSpots = () => {
+  return {
+    type: RESET_USER_SPOTS,
+  };
+};
 //----------------------------------------------------------------
 //get spots of current user
 export const getCurrentUserSpots = () => async (dispatch) => {
@@ -31,6 +38,16 @@ export const getCurrentUserSpots = () => async (dispatch) => {
   if (res.ok) {
     const data = await res.json();
     dispatch(loadUserSpots(data));
+    return data;
+  }
+  return res;
+};
+
+export const resetCurrentUserSpots = () => async (dispatch) => {
+  const res = await csrfFetch("/api/users/me/spots");
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(resetUserSpots(data));
     return data;
   }
   return res;
@@ -126,7 +143,6 @@ const sessionUserSpotsReducer = (state = initialState, action) => {
   let newState = { ...state };
   switch (action.type) {
     case LOAD_USER_SPOTS:
-      console.log("userSpotsReducer", action.payload.Spots);
       action.payload.Spots?.forEach((spot) => {
         newState = {
           ...newState,
@@ -139,6 +155,9 @@ const sessionUserSpotsReducer = (state = initialState, action) => {
       return newState;
     case REMOVE_SPOT:
       delete newState[action.payload];
+      return newState;
+    case RESET_USER_SPOTS:
+      newState = {};
       return newState;
     default:
       return state;

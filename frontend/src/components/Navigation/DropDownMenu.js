@@ -1,14 +1,12 @@
-//Create drop down menu to hold modals for login and signup
-//This will have the profile icon plus hamburger menu
-//When logged in, this will contain info about the user
 import React, { useEffect, useState, useRef } from "react";
 import OpenModalButton from "../OpenModalButton";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import LoginFormModal from "../LoginFormModal";
 import SignupFormModal from "../SignupFormModal";
-// import ProfileButton from "./ProfileButton";
+
 import { logout } from "../../store/session";
+import { resetCurrentUserSpots } from "../../store/sessionUserSpots";
 
 const DropDownMenu = ({ isLoaded }) => {
   const [dropDown, setDropDown] = useState(false);
@@ -17,9 +15,10 @@ const DropDownMenu = ({ isLoaded }) => {
   const ulRef = useRef();
   const dispatch = useDispatch();
 
-  const logoutUser = (e) => {
+  const logoutUser = async (e) => {
     e.preventDefault();
     dispatch(logout());
+    dispatch(resetCurrentUserSpots());
     history.push("/");
   };
 
@@ -34,7 +33,7 @@ const DropDownMenu = ({ isLoaded }) => {
     if (!dropDown) return;
 
     const closeMenu = (e) => {
-      if (!ulRef.current?.containst(e.target)) {
+      if (!ulRef.current?.contains(e.target)) {
         setDropDown(false);
       }
     };
@@ -47,34 +46,37 @@ const DropDownMenu = ({ isLoaded }) => {
   let sessionLinks;
   if (sessionUser) {
     sessionLinks = (
-      <div className={"nav-button profile-button"}>
-        <ul>
-          <li>Hello, {sessionUser.firstName}</li>
-          <li>{sessionUser.email}</li>
-          <li>
-            <button onClick={manageSpots}>Manage Spots</button>
+      <div className=" profile-button session-links-container">
+        <ul className="drop-down-ul">
+          <li className="drop-down-li">Hello, {sessionUser.firstName}</li>
+          <li className="drop-down-li drop-down-email">{sessionUser.email}</li>
+          <li className="drop-down-li">
+            <button className="drop-down-button" onClick={manageSpots}>
+              Manage Spots
+            </button>
           </li>
-          <li>
-            <button onClick={logoutUser}>Log Out</button>
+          <li className="drop-down-li">
+            <button className="drop-down-button" onClick={logoutUser}>
+              Log Out
+            </button>
           </li>
-          {/* <li>
-            <ProfileButton user={sessionUser} />
-          </li> */}
         </ul>
       </div>
     );
   } else {
     sessionLinks = (
-      <div>
-        <ul>
-          <li className="modal-button">
+      <div className="session-links-container">
+        <ul className="drop-down-modals-ul">
+          <li className="drop-down-li">
             <OpenModalButton
+              className="drop-down-button"
               buttonText="Log In"
               modalComponent={<LoginFormModal />}
             />
           </li>
-          <li className="modal-button">
+          <li className="drop-down-li">
             <OpenModalButton
+              className="drop-down-button"
               buttonText="Sign Up"
               modalComponent={<SignupFormModal />}
             />

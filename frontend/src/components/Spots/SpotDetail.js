@@ -37,8 +37,6 @@ const SpotDetail = () => {
   const sessionUser = useSelector((state) => state.session.user);
 
   const reversedReviewsArr = Object.values(reviews).reverse();
-  console.log("REVIEWS STATE", reviews);
-  console.log("REVERSED REVIEWS ARR", reversedReviewsArr);
 
   const handleReserve = (e) => {
     e.preventDefault();
@@ -123,7 +121,7 @@ const SpotDetail = () => {
               ) ? (
                 <div>
                   <OpenModalButton
-                    className="post-review-button"
+                    className="post-review-button open-modal-button"
                     buttonText="Post Your Review"
                     modalComponent={<PostReviewModal spot={spot} />}
                   />
@@ -160,8 +158,8 @@ const SpotDetail = () => {
                 {sessionUser ? (
                   sessionUser.id === review.User.id ? (
                     <OpenModalButton
-                      className="delete-review-button"
-                      buttonText="delete"
+                      className="delete-review-button open-modal-button"
+                      buttonText="Delete"
                       modalComponent={<DeleteReviewModal review={review} />}
                     />
                   ) : null

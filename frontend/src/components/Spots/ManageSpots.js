@@ -29,9 +29,6 @@ const ManageSpots = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const user = useSelector((state) => state.session.user);
-  // const userSpots = useSelector((state) =>
-  //   Object.values(state.userSpots)
-  // ).filter((spot) => spot?.ownerId === user.id);
   const userSpots = useSelector((state) => Object.values(state.userSpots));
 
   useEffect(() => {

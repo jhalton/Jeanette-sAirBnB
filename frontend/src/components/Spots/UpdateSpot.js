@@ -27,7 +27,7 @@ const UpdateSpot = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { spotId } = useParams();
-  const spot = useSelector((state) => state.singleSpot[+spotId]);
+  const spot = useSelector((state) => state.allSpots[+spotId]);
 
   console.log("LOOK HERE UPDATE SPOT", spot);
 

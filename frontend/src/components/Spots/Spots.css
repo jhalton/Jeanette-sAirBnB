@@ -94,6 +94,12 @@
 
 /* ------------------------------------------------------------ */
 /* SpotDetail */
+.post-review-button,
+.delete-review-button {
+  padding: 5px;
+  margin: 5px;
+}
+
 .spot-detail-container {
   display: grid;
   justify-content: center;
@@ -215,11 +221,8 @@
     rgba(252, 70, 107, 1) 100%
   );
   color: white;
-
-  /* background-color: #ec3355; */
   border: none;
-  /* border-radius: 10px; */
-  /* color: white; */
+  border-radius: 0.3rem;
   width: 100%;
   box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.4);
   list-style-type: none;
@@ -334,10 +337,10 @@
 .delete-button {
   grid-area: delete;
   background-color: #ec3355;
-  border: none;
-  border-radius: 10px;
   color: white;
-  width: 100%;
-  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.4);
+  border: 0.5px solid #333;
+  padding: 5px;
+  border-radius: 0.3rem;
   justify-self: end;
+  height: fit-content;
 }
