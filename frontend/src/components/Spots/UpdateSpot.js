@@ -10,8 +10,6 @@ const UpdateSpot = () => {
   const { spotId } = useParams();
   const spot = useSelector((state) => state.allSpots[+spotId]);
 
-  console.log("LOOK HERE UPDATE SPOT", spot);
-
   const [country, setCountry] = useState(spot.country);
   const [address, setAddress] = useState(spot.address);
   const [city, setCity] = useState(spot.city);
@@ -48,7 +46,7 @@ const UpdateSpot = () => {
         otherImages,
       };
       dispatch(updateSpot(spotId, newSpot)).then(
-        history.push(`/api/spots/${spot.id}`)
+        history.push(`/spots/${spot.id}`)
       );
 
       //reset form inputs and errors
