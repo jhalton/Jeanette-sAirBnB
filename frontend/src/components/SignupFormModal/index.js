@@ -117,7 +117,11 @@ const SignupFormModal = () => {
         <button
           className="signup-button"
           type="submit"
-          disabled={username.length < 4 || password.length < 6}
+          disabled={
+            username.length < 4 ||
+            password.length < 6 ||
+            confirmPassword.length < 6
+          }
         >
           Submit
         </button>

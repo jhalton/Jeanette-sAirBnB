@@ -1,24 +1,9 @@
-/*
-User Stories
-As an authenticated user, I want to delete a spot I created.
-As an authenticated user, I want to be prompted to confirm deleting
- a spot before it happens.
-
-Acceptance Criteria
-✓ Clicking "Delete" on one of the spot tiles on the spot management 
-    page opens a confirmation modal popup that should contain: a Title:
-    "Confirm Delete", a Message: "Are you sure you want to remove this
-     spot?", a Red button: "Yes (Delete Spot)", and a Dark grey button:
-     "No (Keep Spot)".
-✓ After a spot is deleted, it should be removed from the spot list in 
-    the spot management page and in the landing page. No refresh should 
-    be necessary.
-*/
 import React from "react";
 import { useModal } from "../../context/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteSpot, getCurrentUserSpots } from "../../store/sessionUserSpots";
 import "./DeleteSpotModal.css";
+import { getAllSpots } from "../../store/spots";
 
 const DeleteSpotModal = ({ spot }) => {
   const dispatch = useDispatch();
@@ -30,6 +15,7 @@ const DeleteSpotModal = ({ spot }) => {
     e.preventDefault();
     await dispatch(deleteSpot(spot.id));
     await dispatch(getCurrentUserSpots(user.id));
+    await dispatch(getAllSpots());
     closeModal();
   };
 

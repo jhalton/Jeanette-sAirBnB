@@ -15,10 +15,12 @@ export const loadOneSpot = (id) => {
 export const getSpotDetails = (id) => async (dispatch) => {
   const res = await csrfFetch(`/api/spots/${id}`);
 
-  const data = await res.json();
-
-  dispatch(loadOneSpot(data));
-  return data;
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(loadOneSpot(data));
+    return data;
+  }
+  return res;
 };
 
 //------------------------------------------------------
