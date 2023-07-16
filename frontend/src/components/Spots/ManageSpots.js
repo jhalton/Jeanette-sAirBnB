@@ -33,7 +33,6 @@ const ManageSpots = () => {
   //   Object.values(state.userSpots)
   // ).filter((spot) => spot?.ownerId === user.id);
   const userSpots = useSelector((state) => Object.values(state.userSpots));
-  console.log("MANAGE SPOTS", userSpots);
 
   useEffect(() => {
     dispatch(getCurrentUserSpots(user.id));
@@ -69,7 +68,9 @@ const ManageSpots = () => {
               <p className="manage-spots-price">${spot.price} / night</p>
               <p className="manage-spots-rating">
                 <i className="fa-solid fa-star"></i>
-                {Number(spot.avgRating) ? spot.avgRating : "New!"}
+                {Number(spot.avgRating)
+                  ? Number(spot.avgRating).toFixed(1)
+                  : "New!"}
               </p>
               <div className="management-buttons">
                 <button

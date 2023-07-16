@@ -11,24 +11,32 @@
   grid-gap: 10px;
   max-width: 1000px;
   height: 100%;
+  padding: 25px;
 }
 
 .landing-page-li {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: 5fr 1fr 1fr;
+  width: 100%;
+  grid-template-columns: 1fr;
   grid-template-areas:
-    "image   image   image   image"
-    "image   image   image   image"
-    "image   image   image   image"
-    "image   image   image   image"
-    "image   image   image   image"
+    "image "
+    "landing-page-detail";
+}
+
+.landing-page-details {
+  grid-area: landing-page-detail;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, auto);
+  grid-template-areas:
     "location location rating  rating"
-    "price      price       .        .  ";
+    "price   price price price        ";
 }
 
 .landing-page-spot-image {
   grid-area: image;
+  width: 100%;
 }
 
 .landing-page-location {
@@ -43,6 +51,7 @@
 
 .landing-page-price {
   grid-area: price;
+  width: 100%;
   justify-self: start;
 }
 
@@ -52,7 +61,7 @@
 
 .spot-image {
   border-radius: 10px;
-  width: 25vw;
+  width: 100%;
   object-fit: cover;
   object-position: center;
   position: relative;
@@ -60,62 +69,18 @@
   height: 200px;
 }
 /* ---------------------------------------------------------------- */
-/* Tooltip
-.spot-image::before,
-.spot-image::after {
-  --scale: 0;
-  --tooltip-color: #333
-  --arrow-size: 10px;
-  
-
-  position: absolute;
-  top: -0.25rem;
-  left: 50%;
-  transform: translateX(-50%) translateY(var(--translate-y, 0) scale(var(--scale)));
-  transition: 150ms transform;
-  transform-origin: bottom center;
-}
-
-.spot-image::before {
---translate-y: calc(-100% - var(--arrow-size));
-
-  content: attr(data-tooltip);
-  color: white;
-  padding: 0.5rem;
-  border-radius: 0rem;
-  text-align: center;
-  width: max-content;
-  max-width: 100%;
-  background-color: var(--tooltip-color);
-}
-
-.spot-image:hover::before,
-.spot-image:hover::after {
-  --scale: 1;
-
-  cursor: pointer;
-}
-
-.spot-image::after {
---translate-y: calc(-1 * var(--arrow-size));
-
-  content: "";
-  border: var(--arrow-size) solid transparent;
-  border-top-color: var(--tooltip-color);
-  transform-origin: top center;
-} */
 
 .tooltip-container {
-  position: relative;
+  position: absolute;
   display: inline-block;
 }
 
 .tooltip {
   visibility: hidden;
   position: absolute;
-  top: calc(100% + 5px);
-  left: 50%;
-  transform: translateX(100%) translateY(100%);
+  top: 10px;
+  left: 10px;
+
   background-color: #333;
   color: white;
   padding: 5px;
@@ -312,41 +277,58 @@
   grid-template-rows: 1fr 1fr 1fr;
 }
 
+.manage-spots-li {
+  padding: 5px;
+}
+
 .manage-spots-text {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-rows: auto auto auto;
   grid-template-areas:
     "manage-location    manage-location       manage-rating       manage-rating"
     "manage-price        manage-price        manage-price     manage-price "
-    "update      delete      .              . ";
+    "manage-buttons manage-buttons     .              . ";
   overflow: auto;
 }
 
 .manage-spots-location {
   grid-area: manage-location;
   justify-self: start;
+  margin-bottom: 5px;
+  margin-top: 0;
 }
 
 .manage-spots-price {
   grid-area: manage-price;
   justify-self: start;
+  margin-bottom: 5px;
+  margin-top: 0;
 }
 
 .manage-spots-rating {
   grid-area: manage-rating;
   justify-self: end;
+  margin-bottom: 5px;
+  margin-top: 0;
+}
+
+.management-buttons {
+  grid-area: manage-buttons;
+  display: inline-flex;
+  justify-content: baseline;
+  gap: 5px;
 }
 
 .update-button {
   grid-area: update;
   background-color: #ec3355;
-  border: none;
-  /* border-radius: 10px; */
   color: white;
-  width: 100%;
-  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.4);
+  border: 0.5px solid #333;
+  padding: 5px;
+  border-radius: 0.3rem;
   justify-self: start;
+  height: fit-content;
 }
 
 .delete-button {
@@ -357,5 +339,5 @@
   color: white;
   width: 100%;
   box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.4);
-  justify-self: center;
+  justify-self: end;
 }

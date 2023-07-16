@@ -1,19 +1,20 @@
 //Create drop down menu to hold modals for login and signup
 //This will have the profile icon plus hamburger menu
 //When logged in, this will contain info about the user
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import OpenModalButton from "../OpenModalButton";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import LoginFormModal from "../LoginFormModal";
 import SignupFormModal from "../SignupFormModal";
-import ProfileButton from "./ProfileButton";
-import { logout, login } from "../../store/session";
+// import ProfileButton from "./ProfileButton";
+import { logout } from "../../store/session";
 
 const DropDownMenu = ({ isLoaded }) => {
   const [dropDown, setDropDown] = useState(false);
   const sessionUser = useSelector((state) => state.session.user);
   const history = useHistory();
+  const ulRef = useRef();
   const dispatch = useDispatch();
 
   const logoutUser = (e) => {
@@ -27,11 +28,21 @@ const DropDownMenu = ({ isLoaded }) => {
     history.push("/api/users/me/spots");
   };
 
-  const loginDemo = (e) => {
-    e.preventDefault();
+  //-----------------------------------------------------
 
-    dispatch(login({ credential: "demo@demo.io", password: "password" }));
-  };
+  useEffect(() => {
+    if (!dropDown) return;
+
+    const closeMenu = (e) => {
+      if (!ulRef.current?.containst(e.target)) {
+        setDropDown(false);
+      }
+    };
+
+    document.addEventListener("click", closeMenu);
+
+    return () => document.removeEventListener("click", closeMenu);
+  }, [dropDown]);
 
   let sessionLinks;
   if (sessionUser) {
@@ -67,9 +78,6 @@ const DropDownMenu = ({ isLoaded }) => {
               buttonText="Sign Up"
               modalComponent={<SignupFormModal />}
             />
-          </li>
-          <li>
-            <button onClick={loginDemo}>Log In as Demo User</button>
           </li>
         </ul>
       </div>

@@ -43,20 +43,21 @@ const LandingPage = () => {
             <Tooltip text={spot.name}>
               <img
                 className="landing-page-spot-image spot-image"
-                // data-tooltip="test text" //when this works, change to {spot.name}
                 src={spot.previewImage || defaultPreview}
                 alt={spot.name}
                 onClick={() => history.push(`/api/spots/${spot.id}`)}
               />
             </Tooltip>
-            <span className="landing-page-location">
-              {spot.city}, {spot.state}
-            </span>
-            <span className="landing-page-rating">
-              <i className="fa-solid fa-star"></i>
-              {Number(spot.avgRating) ? spot.avgRating : "New!"}
-            </span>
-            <span className="landing-page-price">${spot.price} / night</span>
+            <div className="landing-page-details">
+              <span className="landing-page-location">
+                {spot.city}, {spot.state}
+              </span>
+              <span className="landing-page-rating">
+                <i className="fa-solid fa-star"></i>
+                {Number(spot.avgRating) ? spot.avgRating : "New!"}
+              </span>
+              <span className="landing-page-price">${spot.price}/night</span>
+            </div>
           </li>
         ))}
       </ul>

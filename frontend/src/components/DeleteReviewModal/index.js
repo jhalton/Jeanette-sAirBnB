@@ -49,12 +49,14 @@ const DeleteReviewModal = ({ review }) => {
       <span className="delete-review-prompt">
         Are you sure you want to delete this review?
       </span>
-      <button className="delete-review-button" onClick={confirmDelete}>
-        Yes (Delete Review)
-      </button>
-      <button className="keep-review-button" onClick={rejectDelete}>
-        No (Keep Review)
-      </button>
+      <div className="delete-review-button-div">
+        <button className="delete-review-button" onClick={confirmDelete}>
+          Yes (Delete Review)
+        </button>
+        <button className="keep-review-button" onClick={rejectDelete}>
+          No (Keep Review)
+        </button>
+      </div>
     </div>
   );
 };
