@@ -24,7 +24,7 @@ const LandingPage = () => {
             <li
               className="landing-page-li"
               key={spot.id}
-              onClick={() => history.push(`/api/spots/${spot.id}`)}
+              onClick={() => history.push(`/spots/${spot.id}`)}
             >
               <Tooltip text={spot.name}>
                 <img

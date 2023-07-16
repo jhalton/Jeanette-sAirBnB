@@ -26,13 +26,13 @@ function App() {
           <Route exact path="/">
             <Spots />
           </Route>
-          <Route path="/api/spots/:spotId/update">
+          <Route path="/spots/:spotId/update">
             <UpdateSpot />
           </Route>
-          <Route path="/api/spots/:spotId">
+          <Route path="/spots/:spotId">
             <SpotDetail />
           </Route>
-          <Route exact path="/api/spots">
+          <Route exact path="/spots">
             <CreateNewSpot />
           </Route>
           <Route path="/api/users/me/spots">

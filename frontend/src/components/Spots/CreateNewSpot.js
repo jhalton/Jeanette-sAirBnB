@@ -55,7 +55,7 @@ const CreateNewSpot = () => {
         filteredImgArr.forEach((image) => {
           dispatch(createAdditionalImage(createdSpot.id, image));
         });
-        history.push(`/api/spots/${createdSpot.id}`);
+        history.push(`/spots/${createdSpot.id}`);
       });
 
       //reset form inputs and errors

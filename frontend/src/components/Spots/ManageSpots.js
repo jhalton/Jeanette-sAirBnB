@@ -21,7 +21,7 @@ const ManageSpots = () => {
         <div>
           <h1>Manage Spots</h1>
           <p>It looks like you don't have any spots yet!</p>
-          <NavLink to="/api/spots">Create a Spot</NavLink>
+          <NavLink to="/spots">Create a Spot</NavLink>
         </div>
       </div>
     );
@@ -34,7 +34,7 @@ const ManageSpots = () => {
           <h1>Manage Spots</h1>
           <button
             className="create-a-spot-button"
-            onClick={() => history.push("/api/spots")}
+            onClick={() => history.push("/spots")}
           >
             Create a Spot
           </button>
@@ -46,7 +46,7 @@ const ManageSpots = () => {
                 className="spot-image"
                 src={spot.previewImage}
                 alt={spot.name}
-                onClick={() => history.push(`/api/spots/${spot.id}`)}
+                onClick={() => history.push(`/spots/${spot.id}`)}
               />
               {console.log("MANAGE SPOT", spot)}
               <div className="manage-spots-text">
@@ -63,7 +63,7 @@ const ManageSpots = () => {
                 <div className="management-buttons">
                   <button
                     className="update-button"
-                    onClick={() => history.push(`/api/spots/${spot.id}/update`)}
+                    onClick={() => history.push(`/spots/${spot.id}/update`)}
                   >
                     Update
                   </button>

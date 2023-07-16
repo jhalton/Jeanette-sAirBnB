@@ -24,7 +24,7 @@ const DropDownMenu = ({ isLoaded }) => {
 
   const manageSpots = (e) => {
     e.preventDefault();
-    history.push("/api/users/me/spots");
+    history.push("/users/me/spots");
   };
 
   //-----------------------------------------------------
