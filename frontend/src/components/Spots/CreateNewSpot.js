@@ -1,52 +1,3 @@
-/*
-User Stories
--As an authenticated user, I want to create a spot to include in the listings.
--As an authenticated user, if I make a mistake while creating a spot, I want 
-useful error messages (a.k.a. validation).
--As an authenticated user, when I successfully create a spot, I want to see its 
-details immediately.
-
-Acceptance Criteria
-
-✓ -There should be a "Create a New Spot" button in the navigation bar to the left
- of the User Menu button for logged-in users.
-✓ -Upon clicking the "Create a New Spot" button, the user should be navigated to a 
-blank form to gather the data for a new spot (see wireframe).
-✓ -On the new spot form, there should be: a title at the top with the text "Create
- a New Spot".
-✓✓-The first section should include: ✓ a heading of "Where's your place located?", a 
-✓ caption of "Guests will only get your exact address once they booked a 
-reservation.", and text inputs with labels and placeholders for "Country", 
-"Street Address", "City", and "State" ("Latitude" and "Longitude" inputs are 
-optional for MVP) [DO I HAVE TO INCLUDE LABELS?]
-✓✓-The second section should include: ✓  a heading of "Describe your place to guests",
- ✓ a caption of "Mention the best features of your space, any special amentities
-  like fast wifi or parking, and what you love about the neighborhood.", and  ✓ a 
-  text area with a placeholder of "Please write at least 30 characters".
-✓✓ -The third section should include: ✓ a heading of "Create a title for your spot",
- ✓ a caption of "Catch guests' attention with a spot title that highlights what 
- makes your place special.", and a text input with a placeholder of "Name of 
- your spot".
-✓✓-The fourth section should include: a heading of "Set a base price for your spot"
-, a caption of "Competitive pricing can help your listing stand out and rank 
-higher in search results.", and a number input with a placeholder of "Price per
- night (USD)".
-✓✓ -The fifth section should include: a heading of "Liven up your spot with photos",
-    a caption of "Submit a link to at least one photo to publish your spot.", and 
-    five text inputs where the first input has a placeholder of "Preview Image URL"
-     and the rest of the inputs have a placeholder of "Image URL".
-✓✓-The submit button should have the text of "Create Spot".
--Validation messages must show at the top of the form or under each field with an
-     error if the user tries to submit an incomplete form. Examples: a * Required 
-     Field: " is required" (e.g. "Price per night is required", etc.), a Description
-       Min Length: "Description needs 30 or more characters". Out of the five image 
-       URL inputs, only the first Image URL input (the Preview Image URL) is required.
-✓-When a spot is successfully created, the user should automatically be navigated 
-    to the new spot's detail page.
--Navigating away and back to the create spot form form resets any errors and 
-    clears all data entered, so it displays in the default state (no errors, *empty 
-    inputs, button disabled).
-*/
 import { useDispatch } from "react-redux";
 import { createSpot } from "../../store/sessionUserSpots";
 import { useState, useEffect } from "react";
@@ -73,12 +24,14 @@ const CreateNewSpot = () => {
   const [image3, setImage3] = useState("");
   const [image4, setImage4] = useState("");
   const [errors, setErrors] = useState({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const additionalImgArr = [image1, image2, image3, image4];
   const filteredImgArr = additionalImgArr.filter((img) => img.length > 0);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsSubmitted(true);
 
     if (!Object.keys(errors).length) {
       const newSpot = {
@@ -156,37 +109,43 @@ const CreateNewSpot = () => {
           reservation.
         </p>
         <input
+          className="create-country"
           type="text"
           placeholder="Country"
           value={country}
           onChange={(e) => setCountry(e.target.value)}
           //   required
         />
-        <div>{errors.country && `* ${errors.country}`}</div>
+        <div>{isSubmitted && errors.country && `* ${errors.country}`}</div>
         <input
+          className="create-address"
           type="text"
           placeholder="Street address"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           //   required
         />
-        <div>{errors.address && `* ${errors.address}`}</div>
-        <input
-          type="text"
-          placeholder="City"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          //   required
-        />
-        <div>{errors.city && `* ${errors.city}`}</div>
-        <input
-          type="text"
-          placeholder="State"
-          value={state}
-          onChange={(e) => setState(e.target.value)}
-          //   required
-        />
-        <div>{errors.state && `* ${errors.state}`}</div>
+        <div>{isSubmitted && errors.address && `* ${errors.address}`}</div>
+        <div className="city-and-state">
+          <input
+            className="create-city"
+            type="text"
+            placeholder="City"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            //   required
+          />
+          <input
+            className="create-state"
+            type="text"
+            placeholder="State"
+            value={state}
+            onChange={(e) => setState(e.target.value)}
+            //   required
+          />
+        </div>
+        <div>{isSubmitted && errors.city && `* ${errors.city}`}</div>
+        <div>{isSubmitted && errors.state && `* ${errors.state}`}</div>
         {/* <input
           type="text"
           placeholder="Latitude"
@@ -205,39 +164,44 @@ const CreateNewSpot = () => {
           fast wifi or parking, and what you love about the neighborhood.
         </p>
         <textarea
+          className="create-description"
           type="text"
           placeholder="Please write at least 30 characters"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           //   required
         />
-        <div>{errors.description && `* ${errors.description}`}</div>
+        <div>
+          {isSubmitted && errors.description && `* ${errors.description}`}
+        </div>
         <h3>Create a title for your spot</h3>
         <p>
           Catch guests' attention with a spot title that highlights what makes
           your place special.
         </p>
         <input
+          className="create-name"
           type="text"
           placeholder="Name of your spot"
           value={name}
           onChange={(e) => setName(e.target.value)}
           //   required
         />
-        <div>{errors.name && `* ${errors.name}`}</div>
+        <div>{isSubmitted && errors.name && `* ${errors.name}`}</div>
         <h3>Set a base price</h3>
         <p>
           Competitive pricing can help your listing stand out and rank higher in
           search results.
         </p>
         <input
+          className="create-price"
           type="number"
           placeholder="Price per night (USD)"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           //   required
         />
-        <div>{errors.price && `* ${errors.price}`}</div>
+        <div>{isSubmitted && errors.price && `* ${errors.price}`}</div>
         <h3>Liven up your spot with photos</h3>
         <p>Submit a link to at least one photo to publish your spot.</p>
         <input
@@ -247,7 +211,9 @@ const CreateNewSpot = () => {
           onChange={(e) => setPreviewImage(e.target.value)}
           //   required
         />
-        <div>{errors.previewImage && `* ${errors.previewImage}`}</div>
+        <div>
+          {isSubmitted && errors.previewImage && `* ${errors.previewImage}`}
+        </div>
         <input
           type="text"
           placeholder="Image URL"
@@ -275,7 +241,7 @@ const CreateNewSpot = () => {
         <button
           className="create-spot-form-button"
           type="submit"
-          disabled={Object.keys(errors).length ? true : false}
+          // disabled={Object.keys(errors).length ? true : false}
         >
           Create Spot
         </button>
