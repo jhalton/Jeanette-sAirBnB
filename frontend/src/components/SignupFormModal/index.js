@@ -56,7 +56,7 @@ const SignupFormModal = () => {
           required
         />
 
-        {errors.email && <p>{errors.email}</p>}
+        {errors.email && <p className="error">{errors.email}</p>}
 
         <input
           className="signup-input"
@@ -67,7 +67,7 @@ const SignupFormModal = () => {
           required
         />
 
-        {errors.username && <p>{errors.username}</p>}
+        {errors.username && <p className="error">{errors.username}</p>}
 
         <input
           className="signup-input"
@@ -78,7 +78,7 @@ const SignupFormModal = () => {
           required
         />
 
-        {errors.firstName && <p>{errors.firstName}</p>}
+        {errors.firstName && <p className="error">{errors.firstName}</p>}
 
         <input
           className="signup-input"
@@ -89,7 +89,7 @@ const SignupFormModal = () => {
           required
         />
 
-        {errors.lastName && <p>{errors.lastName}</p>}
+        {errors.lastName && <p className="error">{errors.lastName}</p>}
 
         <input
           className="signup-input"
@@ -100,7 +100,7 @@ const SignupFormModal = () => {
           required
         />
 
-        {errors.password && <p>{errors.password}</p>}
+        {errors.password && <p className="error">{errors.password}</p>}
 
         <input
           className="signup-input"
@@ -111,7 +111,9 @@ const SignupFormModal = () => {
           required
         />
 
-        {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+        {errors.confirmPassword && (
+          <p className="error">{errors.confirmPassword}</p>
+        )}
         <button
           className="signup-button"
           type="submit"

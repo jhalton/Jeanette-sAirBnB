@@ -1,25 +1,3 @@
-/*
-As a site visitor or authenticated user, I want to see
- a minimum of 1 image (preview image) on the spot's details
-page with:
-The location, with the country
-1-5 spot images
-The host's name
-A description
-The price
-NOTE: Ratings and reviews will be covered in a separate feature.
-
-Acceptance Criteria
-
-✓ -On the spot's detail page, the following information should be present:
- a Heading , Location: , , , Images (1 large image and 4 small images), 
- Text: Hosted by , , Paragraph: , and the callout information box on the
-right, below the images.
-✓ -The callout information box on the right of the spot's detail page should 
-state the price for the spot followed by the label "night", and have a "Reserve" button.
-✓-When the "Reserve" button on the spot's detail page is clicked, it should open an 
-alert with the text "Feature coming soon".
-*/
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";

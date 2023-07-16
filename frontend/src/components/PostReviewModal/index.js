@@ -122,7 +122,10 @@ const PostReviewModal = ({ spot }) => {
           </div>
           <span> Stars</span>
         </div>
-        <button disabled={review?.length < 10 || rating < 1}>
+        <button
+          className="submit-review-button"
+          disabled={review?.length < 10 || rating < 1}
+        >
           Submit Your Review
         </button>
       </form>

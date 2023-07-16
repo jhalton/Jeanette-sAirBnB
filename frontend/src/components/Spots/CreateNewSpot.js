@@ -116,7 +116,9 @@ const CreateNewSpot = () => {
           onChange={(e) => setCountry(e.target.value)}
           //   required
         />
-        <div>{isSubmitted && errors.country && `* ${errors.country}`}</div>
+        <div className="error">
+          {isSubmitted && errors.country && `* ${errors.country}`}
+        </div>
         <input
           className="create-address"
           type="text"
@@ -125,7 +127,9 @@ const CreateNewSpot = () => {
           onChange={(e) => setAddress(e.target.value)}
           //   required
         />
-        <div>{isSubmitted && errors.address && `* ${errors.address}`}</div>
+        <div className="error">
+          {isSubmitted && errors.address && `* ${errors.address}`}
+        </div>
         <div className="city-and-state">
           <input
             className="create-city"
@@ -144,8 +148,12 @@ const CreateNewSpot = () => {
             //   required
           />
         </div>
-        <div>{isSubmitted && errors.city && `* ${errors.city}`}</div>
-        <div>{isSubmitted && errors.state && `* ${errors.state}`}</div>
+        <div className="error">
+          {isSubmitted && errors.city && `* ${errors.city}`}
+        </div>
+        <div className="error">
+          {isSubmitted && errors.state && `* ${errors.state}`}
+        </div>
         {/* <input
           type="text"
           placeholder="Latitude"
@@ -171,7 +179,7 @@ const CreateNewSpot = () => {
           onChange={(e) => setDescription(e.target.value)}
           //   required
         />
-        <div>
+        <div className="error">
           {isSubmitted && errors.description && `* ${errors.description}`}
         </div>
         <h3>Create a title for your spot</h3>
@@ -187,7 +195,9 @@ const CreateNewSpot = () => {
           onChange={(e) => setName(e.target.value)}
           //   required
         />
-        <div>{isSubmitted && errors.name && `* ${errors.name}`}</div>
+        <div className="error">
+          {isSubmitted && errors.name && `* ${errors.name}`}
+        </div>
         <h3>Set a base price</h3>
         <p>
           Competitive pricing can help your listing stand out and rank higher in
@@ -201,7 +211,9 @@ const CreateNewSpot = () => {
           onChange={(e) => setPrice(e.target.value)}
           //   required
         />
-        <div>{isSubmitted && errors.price && `* ${errors.price}`}</div>
+        <div className="error">
+          {isSubmitted && errors.price && `* ${errors.price}`}
+        </div>
         <h3>Liven up your spot with photos</h3>
         <p>Submit a link to at least one photo to publish your spot.</p>
         <input
@@ -211,7 +223,7 @@ const CreateNewSpot = () => {
           onChange={(e) => setPreviewImage(e.target.value)}
           //   required
         />
-        <div>
+        <div className="error">
           {isSubmitted && errors.previewImage && `* ${errors.previewImage}`}
         </div>
         <input

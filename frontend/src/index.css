@@ -26,6 +26,10 @@ button:disabled {
   cursor: auto;
 }
 
+.error {
+  color: #ec3355;
+}
+
 .confirm-button {
   background: rgb(251, 63, 63);
   background: radial-gradient(

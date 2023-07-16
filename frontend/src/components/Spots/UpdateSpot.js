@@ -1,22 +1,3 @@
-/*
-User Stories
-As an authenticated user, I want to update a spot I created.
-NOTE:
-The image update on a spot is not required for MVP.
-
-Acceptance Criteria
-✓Clicking "Update" on one of the spot tiles on the spot management
-    page navigates the user to the update spot form which looks like 
-    the same as the create a new spot form, but pre-populated with the 
-    values stored in the database for the spot that was clicked, the 
-    title changed to "Update your Spot", and with a submit button text 
-    of "Update your Spot". Image URL inputs on the update spot form are 
-    optional for MVP.
-✓When the update form submission is successful, the user is navigated 
-    to the updated spot's details page.
-✓The updated spot's detail page should display the updated information. No refresh should be necessary.
-*/
-
 import { useDispatch, useSelector } from "react-redux";
 import { updateSpot } from "../../store/sessionUserSpots";
 import { useState, useEffect } from "react";
@@ -46,9 +27,11 @@ const UpdateSpot = () => {
   );
   const [otherImages, setOtherImages] = useState(spot.otherImages);
   const [errors, setErrors] = useState({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsSubmitted(true);
 
     if (!Object.keys(errors).length) {
       const newSpot = {
@@ -122,7 +105,9 @@ const UpdateSpot = () => {
           onChange={(e) => setCountry(e.target.value)}
           //   required
         />
-        <div>{errors.country && `* ${errors.country}`}</div>
+        <div className="error">
+          {isSubmitted && errors.country && `* ${errors.country}`}
+        </div>
         <input
           type="text"
           placeholder="Street address"
@@ -130,7 +115,9 @@ const UpdateSpot = () => {
           onChange={(e) => setAddress(e.target.value)}
           //   required
         />
-        <div>{errors.address && `* ${errors.address}`}</div>
+        <div className="error">
+          {isSubmitted && errors.address && `* ${errors.address}`}
+        </div>
         <input
           type="text"
           placeholder="City"
@@ -138,7 +125,9 @@ const UpdateSpot = () => {
           onChange={(e) => setCity(e.target.value)}
           //   required
         />
-        <div>{errors.city && `* ${errors.city}`}</div>
+        <div className="error">
+          {isSubmitted && errors.city && `* ${errors.city}`}
+        </div>
         <input
           type="text"
           placeholder="State"
@@ -146,7 +135,9 @@ const UpdateSpot = () => {
           onChange={(e) => setState(e.target.value)}
           //   required
         />
-        <div>{errors.state && `* ${errors.state}`}</div>
+        <div className="error">
+          {isSubmitted && errors.state && `* ${errors.state}`}
+        </div>
         {/* <input
           type="text"
           placeholder="Latitude"
@@ -171,7 +162,9 @@ const UpdateSpot = () => {
           onChange={(e) => setDescription(e.target.value)}
           //   required
         />
-        <div>{errors.description && `* ${errors.description}`}</div>
+        <div className="error">
+          {errors.description && `* ${errors.description}`}
+        </div>
         <h3>Create a title for your spot</h3>
         <p>
           Catch guests' attention with a spot title that highlights what makes
@@ -184,7 +177,9 @@ const UpdateSpot = () => {
           onChange={(e) => setName(e.target.value)}
           //   required
         />
-        <div>{errors.name && `* ${errors.name}`}</div>
+        <div className="error">
+          {isSubmitted && errors.name && `* ${errors.name}`}
+        </div>
         <h3>Set a base price</h3>
         <p>
           Competitive pricing can help your listing stand out and rank higher in
@@ -197,7 +192,9 @@ const UpdateSpot = () => {
           onChange={(e) => setPrice(e.target.value)}
           //   required
         />
-        <div>{errors.price && `* ${errors.price}`}</div>
+        <div className="error">
+          {isSubmitted && errors.price && `* ${errors.price}`}
+        </div>
         <h3>Liven up your spot with photos</h3>
         <p>Submit a link to at least one photo to publish your spot.</p>
         <input
@@ -207,7 +204,9 @@ const UpdateSpot = () => {
           onChange={(e) => setPreviewImage(e.target.value)}
           //   required
         />
-        <div>{errors.previewImage && `* ${errors.previewImage}`}</div>
+        <div className="error">
+          {isSubmitted && errors.previewImage && `* ${errors.previewImage}`}
+        </div>
         <input
           type="text"
           placeholder="Image URL"
@@ -235,7 +234,7 @@ const UpdateSpot = () => {
         <button
           className="create-spot-form-button"
           type="submit"
-          disabled={Object.keys(errors).length ? true : false}
+          // disabled={Object.keys(errors).length ? true : false}
         >
           Update your Spot
         </button>

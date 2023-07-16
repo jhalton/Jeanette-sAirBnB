@@ -1,23 +1,3 @@
-/*
-User Stories:
-As an authenticated user, I want to be able to view the spots I have posted in one place.
-As an authenticated user, I want to be able to update a spot I posted.
-As an authenticated user, I want to be able to delete a spot I posted.
-As an authenticated user, if I have not posted any spots, I want to see a friendly message.
-
-Acceptance Criteria:
-✓ When opening the user drop down menu and selecting "Manage Spots", it should navigate the user to 
-    the spot management page which shows the the list of all the spots created by the user.
-✓ The spot management page should contain a heading with the text "Manage Spots".
-✓If no spots have been posted yet by the user, show a "Create a New Spot" link, which links to the 
-    new spot form page, instead of the spot list.
-The spot management page should contain a spot tile list similar to the one in the landing page 
-    (thumbnail image, location, rating, price).
-Each spot in the spot tile list on the spot management page should contain an additional two buttons,
-    "Update" and "Delete" buttons, below the city and state.
-✓ Clicking any part of the spot tile should navigate to that spot's detail page.
-*/
-
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUserSpots } from "../../store/sessionUserSpots";
@@ -48,6 +28,12 @@ const ManageSpots = () => {
   return (
     <div className="manage-spots-div">
       <h1>Manage Spots</h1>
+      <button
+        className="create-a-spot-button"
+        onClick={() => history.push("/api/spots")}
+      >
+        Create a Spot
+      </button>
       <ul className="manage-spots-ul">
         {userSpots.map((spot) => (
           <li key={spot.id} className="manage-spots-li">

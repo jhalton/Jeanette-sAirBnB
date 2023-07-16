@@ -184,6 +184,7 @@
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
+  margin-top: 10px;
 }
 
 .spot-detail-info-box-ul {
@@ -237,6 +238,11 @@
 .info-box-button:hover {
   cursor: pointer;
 }
+
+.reviews-div {
+  border-top: 0.5px solid #333;
+  padding-top: 15px;
+}
 /* --------------------------------------------------- */
 /* Create Spot Form */
 .create-spot-form-div {
@@ -254,6 +260,7 @@
 
 .create-spot-form input {
   width: 100%;
+  margin-bottom: 5px;
 }
 
 .create-spot-form textarea {
@@ -272,7 +279,7 @@
 .city-and-state {
   display: flex;
   flex-direction: row;
-  height: 21.2px;
+
   width: 100%;
   justify-content: space-between;
 }
@@ -293,12 +300,26 @@
   width: 100%;
 }
 
+.create-a-spot-button {
+  width: 230px;
+  background-color: #ec3355;
+  color: white;
+  border: 0.5px solid #333;
+  padding: 5px;
+  border-radius: 0.3rem;
+  height: fit-content;
+}
+
 /* ----------------------------------------------------------- */
 /* Manage Spots */
 .manage-spots-div {
   display: grid;
   list-style-type: none;
   overflow: auto;
+}
+
+.manage-spots-div h1 {
+  margin-bottom: 5px;
 }
 
 .manage-spots-ul {
@@ -317,7 +338,7 @@
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: auto auto auto;
   grid-template-areas:
-    "manage-location    manage-location       manage-rating       manage-rating"
+    "manage-location    manage-location       manage-location      manage-rating"
     "manage-price        manage-price        manage-price     manage-price "
     "manage-buttons manage-buttons     .              . ";
   overflow: auto;

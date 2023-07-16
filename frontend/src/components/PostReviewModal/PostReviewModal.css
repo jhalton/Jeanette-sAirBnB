@@ -32,3 +32,12 @@
 .filled {
   color: #ec3355;
 }
+
+.submit-review-button {
+  background-color: #ec3355;
+  color: white;
+  border: 0.5px solid #333;
+  padding: 5px;
+  border-radius: 0.3rem;
+  height: fit-content;
+}
