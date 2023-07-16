@@ -18,7 +18,9 @@ function App() {
   }, [dispatch]);
   return (
     <>
+      {/* <div id="navigation"> */}
       <Navigation isLoaded={isLoaded} />
+      {/* </div> */}
       {isLoaded && (
         <Switch>
           <Route exact path="/">

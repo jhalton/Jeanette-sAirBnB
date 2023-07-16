@@ -101,9 +101,9 @@ const CreateNewSpot = () => {
 
   return (
     <div className="create-spot-form-div">
-      <h2 className="create-spot-form-header">Create New Spot</h2>
       <form className="create-spot-form" onSubmit={handleSubmit}>
-        <h3>Where's your place located?</h3>
+        <h2 className="create-spot-form-header">Create New Spot</h2>
+        <h3 className="create-top-h3">Where's your place located?</h3>
         <p>
           Guests will only get your exact address once they booked a
           reservation.
@@ -139,6 +139,7 @@ const CreateNewSpot = () => {
             onChange={(e) => setCity(e.target.value)}
             //   required
           />
+          <span>, </span>
           <input
             className="create-state"
             type="text"

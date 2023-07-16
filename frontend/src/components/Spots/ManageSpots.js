@@ -17,62 +17,68 @@ const ManageSpots = () => {
 
   if (!userSpots.length) {
     return (
-      <div>
-        <h1>Manage Spots</h1>
-        <p>It looks like you don't have any spots yet!</p>
-        <NavLink to="/api/spots">Create a Spot</NavLink>
+      <div className="manage-spots-positioning-div">
+        <div>
+          <h1>Manage Spots</h1>
+          <p>It looks like you don't have any spots yet!</p>
+          <NavLink to="/api/spots">Create a Spot</NavLink>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="manage-spots-div">
-      <h1>Manage Spots</h1>
-      <button
-        className="create-a-spot-button"
-        onClick={() => history.push("/api/spots")}
-      >
-        Create a Spot
-      </button>
-      <ul className="manage-spots-ul">
-        {userSpots.map((spot) => (
-          <li key={spot.id} className="manage-spots-li">
-            <img
-              className="spot-image"
-              src={spot.previewImage}
-              alt={spot.name}
-              onClick={() => history.push(`/api/spots/${spot.id}`)}
-            />
-            {console.log("MANAGE SPOT", spot)}
-            <div className="manage-spots-text">
-              <p className="manage-spots-location">
-                {spot.city}, {spot.state}
-              </p>
-              <p className="manage-spots-price">${spot.price} / night</p>
-              <p className="manage-spots-rating">
-                <i className="fa-solid fa-star"></i>
-                {Number(spot.avgRating)
-                  ? Number(spot.avgRating).toFixed(1)
-                  : "New!"}
-              </p>
-              <div className="management-buttons">
-                <button
-                  className="update-button"
-                  onClick={() => history.push(`/api/spots/${spot.id}/update`)}
-                >
-                  Update
-                </button>
-                {/* <button>Delete</button> */}
-                <OpenModalButton
-                  className="delete-button"
-                  buttonText="Delete"
-                  modalComponent={<DeleteSpotModal spot={spot} />}
-                />
+    <div className="manage-spots-positioning-div">
+      <div className="manage-spots-div">
+        <div className="manage-spots-top">
+          <h1>Manage Spots</h1>
+          <button
+            className="create-a-spot-button"
+            onClick={() => history.push("/api/spots")}
+          >
+            Create a Spot
+          </button>
+        </div>
+        <ul className="manage-spots-ul">
+          {userSpots.map((spot) => (
+            <li key={spot.id} className="manage-spots-li">
+              <img
+                className="spot-image"
+                src={spot.previewImage}
+                alt={spot.name}
+                onClick={() => history.push(`/api/spots/${spot.id}`)}
+              />
+              {console.log("MANAGE SPOT", spot)}
+              <div className="manage-spots-text">
+                <p className="manage-spots-location">
+                  {spot.city}, {spot.state}
+                </p>
+                <p className="manage-spots-price">${spot.price} / night</p>
+                <p className="manage-spots-rating">
+                  <i className="fa-solid fa-star"></i>
+                  {Number(spot.avgRating)
+                    ? Number(spot.avgRating).toFixed(1)
+                    : "New!"}
+                </p>
+                <div className="management-buttons">
+                  <button
+                    className="update-button"
+                    onClick={() => history.push(`/api/spots/${spot.id}/update`)}
+                  >
+                    Update
+                  </button>
+                  {/* <button>Delete</button> */}
+                  <OpenModalButton
+                    className="delete-button"
+                    buttonText="Delete"
+                    modalComponent={<DeleteSpotModal spot={spot} />}
+                  />
+                </div>
               </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
