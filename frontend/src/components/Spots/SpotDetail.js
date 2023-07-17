@@ -88,8 +88,8 @@ const SpotDetail = () => {
           <div className="ratings-num-reviews">
             <i className="fa-solid fa-star"></i>
             {spot?.avgRating ? spot.avgRating : "New!"}
-            {spot.numReviews > 0
-              ? spot.numReviews !== 1
+            {Number(spot.numReviews) > 0
+              ? Number(spot.numReviews) !== 1
                 ? ` · ${spot.numReviews} reviews`
                 : ` · ${spot.numReviews} review`
               : null}
@@ -113,7 +113,7 @@ const SpotDetail = () => {
             are no reviews, display 'Be the first to post a review!' */}
             {sessionUser ? (
               sessionUser.id !== spot.ownerId ? (
-                spot.numReviews === 0 ? (
+                Number(spot.numReviews) === 0 ? (
                   <p>Be the first to post a review!</p>
                 ) : null
               ) : null

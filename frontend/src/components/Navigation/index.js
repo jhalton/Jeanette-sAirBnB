@@ -15,6 +15,7 @@ function Navigation({ isLoaded }) {
           <div className="nav-left-side">
             <NavLink exact to="/" className="nav-button">
               <i className="fa-brands fa-airbnb"></i>
+              <span>AirBnB</span>
             </NavLink>
           </div>
         </li>

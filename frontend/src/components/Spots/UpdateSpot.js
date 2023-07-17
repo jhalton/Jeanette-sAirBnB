@@ -47,7 +47,8 @@ const UpdateSpot = () => {
         otherImages,
       };
       dispatch(updateSpot(spotId, newSpot));
-      dispatch(getSpotDetails(spotId)).then(history.push(`/spots/${spot.id}`));
+      dispatch(getSpotDetails(spotId));
+      history.push(`/spots/${spot.id}`);
 
       //reset form inputs and errors
       setCountry("");
@@ -161,7 +162,7 @@ const UpdateSpot = () => {
           //   required
         />
         <div className="error">
-          {errors.description && `* ${errors.description}`}
+          {isSubmitted && errors.description && `* ${errors.description}`}
         </div>
         <h3>Create a title for your spot</h3>
         <p>
