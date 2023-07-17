@@ -66,8 +66,8 @@ const SpotDetail = () => {
               <li className="info-ratings-and-reviews">
                 <i className="fa-solid fa-star"></i>
                 {spot.avgRating ? spot.avgRating : "New!"}
-                {spot.numReviews > 0
-                  ? spot.numReviews !== 1
+                {Number(spot.numReviews) > 0
+                  ? Number(spot.numReviews) !== 1
                     ? ` · ${spot.numReviews} reviews`
                     : ` · ${spot.numReviews} review`
                   : null}
