@@ -38,7 +38,7 @@ export const createAdditionalImage = (spotId, url) => async (dispatch) => {
     }),
   });
   const imageData = await res.json();
-  console.log("CHECKING THUNK IMAGE DATA", imageData);
+
   if (res.ok) {
     dispatch(addImage(spotId, imageData));
     return imageData;
