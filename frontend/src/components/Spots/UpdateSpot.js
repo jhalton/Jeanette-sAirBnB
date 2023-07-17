@@ -3,6 +3,7 @@ import { updateSpot } from "../../store/sessionUserSpots";
 import { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import "./Spots.css";
+import { getSpotDetails } from "../../store/singleSpot";
 
 const UpdateSpot = () => {
   const dispatch = useDispatch();
@@ -45,9 +46,8 @@ const UpdateSpot = () => {
         previewImage,
         otherImages,
       };
-      dispatch(updateSpot(spotId, newSpot)).then(
-        history.push(`/spots/${spot.id}`)
-      );
+      dispatch(updateSpot(spotId, newSpot));
+      dispatch(getSpotDetails(spotId)).then(history.push(`/spots/${spot.id}`));
 
       //reset form inputs and errors
       setCountry("");
@@ -89,8 +89,8 @@ const UpdateSpot = () => {
 
   return (
     <div className="create-spot-form-div">
-      <h2 className="create-spot-form-header">Update your Spot</h2>
       <form className="create-spot-form" onSubmit={handleSubmit}>
+        <h2 className="create-spot-form-header">Update your Spot</h2>
         <h3>Where's your place located?</h3>
         <p>
           Guests will only get your exact address once they booked a
