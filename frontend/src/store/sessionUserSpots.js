@@ -143,13 +143,11 @@ const sessionUserSpotsReducer = (state = initialState, action) => {
   let newState = { ...state };
   switch (action.type) {
     case LOAD_USER_SPOTS:
+      const el = {};
       action.payload.Spots?.forEach((spot) => {
-        newState = {
-          ...newState,
-          [spot.id]: spot,
-        };
+        el[spot.id] = spot;
       });
-      return newState;
+      return el;
     case ADD_SPOT:
       newState[action.payload.id] = action.payload;
       return newState;
