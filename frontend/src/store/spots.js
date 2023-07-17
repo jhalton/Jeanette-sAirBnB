@@ -3,11 +3,18 @@ import { csrfFetch } from "./csrf";
 //--------------------------------------------------------------------
 
 const LOAD_SPOTS = "spot/LOAD_SPOT";
+const RESET_ALL_SPOTS = "spot/RESET_ALL_SPOTS";
 
 export const loadSpot = (payload) => {
   return {
     type: LOAD_SPOTS,
     payload,
+  };
+};
+
+export const resetSpots = () => {
+  return {
+    type: RESET_ALL_SPOTS,
   };
 };
 
@@ -25,6 +32,18 @@ export const getAllSpots = () => async (dispatch) => {
   return res;
 };
 
+//reset spots state
+export const resetAllSpots = () => async (dispatch) => {
+  const res = await csrfFetch("/api/spots");
+
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(resetAllSpots(data));
+    return data;
+  }
+  return res;
+};
+
 //--------------------------------------------------------------------
 
 //reducer
@@ -39,6 +58,9 @@ const spotReducer = (state = initialState, action) => {
           [spot.id]: spot,
         };
       });
+      return newState;
+    case RESET_ALL_SPOTS:
+      newState = {};
       return newState;
     default:
       return state;

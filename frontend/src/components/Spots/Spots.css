@@ -258,6 +258,11 @@
   border-top: 0.5px solid #333;
   padding-top: 15px;
 }
+
+.reviews-ul {
+  list-style-type: none;
+}
+
 /* --------------------------------------------------- */
 /* Create Spot Form */
 .create-spot-form-div {

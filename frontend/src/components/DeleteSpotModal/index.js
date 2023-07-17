@@ -11,11 +11,13 @@ const DeleteSpotModal = ({ spot }) => {
 
   const { closeModal } = useModal();
 
-  const confirmDelete = async (e) => {
+  const confirmDelete = (e) => {
     e.preventDefault();
-    await dispatch(deleteSpot(spot.id));
-    await dispatch(getCurrentUserSpots(user.id));
-    await dispatch(getAllSpots());
+
+    dispatch(deleteSpot(spot.id));
+    dispatch(getCurrentUserSpots(user.id));
+
+    dispatch(getAllSpots());
     closeModal();
   };
 

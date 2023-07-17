@@ -130,7 +130,9 @@ const SpotDetail = () => {
 
               return (
                 <li key={review?.id}>
-                  <p>{review.User?.firstName}</p>
+                  <h3 className="review-first-name">
+                    {review.User?.firstName}
+                  </h3>
                   <p>{formattedDate}</p>
                   <p>{review?.review}</p>
 
