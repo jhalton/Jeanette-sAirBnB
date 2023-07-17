@@ -15,6 +15,7 @@ const SignupFormModal = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
+  console.log("ERRORS", errors);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -123,7 +124,7 @@ const SignupFormModal = () => {
             confirmPassword.length < 6
           }
         >
-          Submit
+          Sign Up
         </button>
       </form>
     </div>

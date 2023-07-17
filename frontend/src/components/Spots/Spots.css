@@ -368,6 +368,7 @@
 
 .manage-spots-li {
   padding: 5px;
+  cursor: pointer;
 }
 
 .manage-spots-text {

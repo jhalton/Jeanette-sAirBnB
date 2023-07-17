@@ -63,7 +63,7 @@ const LoginFormModal = () => {
         </button>
       </form>
       <button className="demo-user-login-button" onClick={loginDemo}>
-        Demo User
+        Log in as Demo User
       </button>
     </div>
   );

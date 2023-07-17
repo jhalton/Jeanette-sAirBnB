@@ -19,12 +19,17 @@ const DropDownMenu = ({ isLoaded }) => {
     e.preventDefault();
     dispatch(logout());
     dispatch(resetCurrentUserSpots());
+    toggleMenu();
     history.push("/");
   };
 
   const manageSpots = (e) => {
     e.preventDefault();
     history.push("/users/me/spots");
+  };
+
+  const toggleMenu = () => {
+    setDropDown(!dropDown);
   };
 
   //-----------------------------------------------------
@@ -47,7 +52,7 @@ const DropDownMenu = ({ isLoaded }) => {
   if (sessionUser) {
     sessionLinks = (
       <div className=" profile-button session-links-container">
-        <ul className="drop-down-ul">
+        <ul ref={ulRef} className="drop-down-ul">
           <li className="drop-down-li">Hello, {sessionUser.firstName}</li>
           <li className="drop-down-li drop-down-email">{sessionUser.email}</li>
           <li className="drop-down-li">
@@ -66,7 +71,7 @@ const DropDownMenu = ({ isLoaded }) => {
   } else {
     sessionLinks = (
       <div className="session-links-container">
-        <ul className="drop-down-modals-ul">
+        <ul ref={ulRef} className="drop-down-ul drop-down-modals-ul">
           <li className="drop-down-li">
             <OpenModalButton
               className="drop-down-button"
@@ -86,9 +91,6 @@ const DropDownMenu = ({ isLoaded }) => {
     );
   }
 
-  const toggleMenu = () => {
-    setDropDown(!dropDown);
-  };
   return (
     <div className="dropdown">
       <button className="nav-button" onClick={toggleMenu}>

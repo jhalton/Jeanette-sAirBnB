@@ -41,12 +41,15 @@ const ManageSpots = () => {
         </div>
         <ul className="manage-spots-ul">
           {userSpots.map((spot) => (
-            <li key={spot.id} className="manage-spots-li">
+            <li
+              key={spot.id}
+              className="manage-spots-li"
+              onClick={() => history.push(`/spots/${spot.id}`)}
+            >
               <img
                 className="spot-image"
                 src={spot.previewImage}
                 alt={spot.name}
-                onClick={() => history.push(`/spots/${spot.id}`)}
               />
               {console.log("MANAGE SPOT", spot)}
               <div className="manage-spots-text">
